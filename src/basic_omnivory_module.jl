@@ -1,7 +1,5 @@
-using LinearAlgebra
 using Parameters
 using DifferentialEquations
-using ForwardDiff
 using PyPlot
 
 @with_kw mutable struct OmnPar
@@ -32,21 +30,12 @@ function model!(du, u, p, t)
     @unpack a_RP, h_RP, e_RP, ω = p
 
     R, C, P = u
-    du[1] = r * R * (1 - R / K) - a_RC * R * C / (1 + a_RC * h_RC * R) - ω * a_RP * R * P / (1 + a_RP * h_RP * R)
-    du[2] = e_RC * a_RC * R * C / (1 + a_RC * h_RC * R) - (1 - ω) * a_CP * C * P / (1 + a_CP * h_CP * C) - m_C * C
+    du[1] = r * R * (1 - R / K) - a_RC * R * C / (1 + a_RC * h_RC * R) - ω * a_RP * R * P / (1 + a_RP * h_RP * R + a_CP * h_CP * C)
+    du[2] = e_RC * a_RC * R * C / (1 + a_RC * h_RC * R) - (1 - ω) * a_CP * C * P / (1 + a_RP * h_RP * R + a_CP * h_CP * C) - m_C * C
     du[3] = e_CP * (1 - ω) * a_CP * C * P / (1 + a_CP * h_CP * C) + e_RP * ω * a_RP * R * P / (1 + a_RP * h_RP * R) - m_P * P
 
     return du
 end
-
-function rhs(u, p)
-    du = similar(u)
-    model!(du, u, p, zero(u))
-    return du
-end
-
-cmat(u, p) = ForwardDiff.jacobian(x -> rhs(x, p), u)
-λ1_stability(p) = maximum(real.(eigvals(cmat(p))))
 
 let
     u0 = [1.0, 0.5, 0.1]
