@@ -5,7 +5,7 @@
 - `burn::Int64 `: number of time steps to be thrown out (burn-in).
 ...
 """
-function topheavy(sol, burn::Int64 = 0)
+function top_heavy(sol, burn::Int = 0)
     burn += 1 # could be time rather than number of time steps
     hcat(
         mean(sol[3, burn:end] ./ (sol[1, burn:end] .+ sol[2, burn:end])),
@@ -15,6 +15,5 @@ function topheavy(sol, burn::Int64 = 0)
     )
 end
 """
-
 
 
