@@ -31,7 +31,7 @@ using PyPlot
 end
 
 # # Forcing Function
-force_K(p, t) = p.A * sin(p.B * t + p.𝛗)
+force_K(p, t) = p.A * sin(2 * π * t / p.B + p.𝛗 * π)
 
 function model!(du, u, p, t)
     @unpack r, K = p
