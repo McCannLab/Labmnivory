@@ -18,7 +18,7 @@ Firs install a recent version of [Julia](https://julialang.org/) and the followi
 which can be done with the following command line
 
 ```julia
-] add  DifferentialEquations LinearAlgebra Parameters ForwardDiff PyPlot Statistics
+] add  DifferentialEquations LinearAlgebra Parameters ForwardDiff PyPlot
 ```
 
 
@@ -26,7 +26,7 @@ Then clone the repository
 
 
 ```
-git clone https://github.com/McCannLab/Labmnivory.git  
+git clone https://github.com/McCannLab/Labmnivory.git
 ```
 
 You should be good to go!
