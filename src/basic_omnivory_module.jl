@@ -21,15 +21,28 @@ using PyPlot
     h_RP = 0.9
     e_RP = 0.4
     ω = 0.5
+    # Forcing Parameters
+    ## Sin amplitude
+    A = 1.0
+    ## Sin angular frequency (usually ω, but we are using that!)
+    B = 1.0
+    ## Sin phase shift
+    𝛗 = 0.0 #NOTE: you get this with \bfvarphi
 end
+
+# # Forcing Function
+force_K(p, t) = p.A * sin(2 * π * t / p.B + p.𝛗 * π)
 
 function model!(du, u, p, t)
     @unpack r, K = p
     @unpack a_RC, h_RC, e_RC, m_C = p
     @unpack a_CP, h_CP, e_CP, m_P = p
     @unpack a_RP, h_RP, e_RP, ω = p
-
     R, C, P = u
+
+    # Force K
+    K += force_K(p, t)
+
     du[1] = r * R * (1 - R / K) - a_RC * R * C / (1 + a_RC * h_RC * R) - ω * a_RP * R * P / (1 + a_RP * h_RP * R + a_CP * h_CP * C)
     du[2] = e_RC * a_RC * R * C / (1 + a_RC * h_RC * R) - (1 - ω) * a_CP * C * P / (1 + a_RP * h_RP * R + a_CP * h_CP * C) - m_C * C
     du[3] = e_CP * (1 - ω) * a_CP * C * P / (1 + a_CP * h_CP * C) + e_RP * ω * a_RP * R * P / (1 + a_RP * h_RP * R) - m_P * P
