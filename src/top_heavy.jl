@@ -1,4 +1,4 @@
-using Statistics
+using Statistics: mean
 
 """
 ...
@@ -10,7 +10,7 @@ using Statistics
 function top_heavy(sol, burn::Int = 0)
     burn += 1 # could be time rather than number of time steps
     if burn > size(sol)[2]
-        error("parameters: `burn` greater than number of row in `sol`!")
+        error("parameters: `burn` greater than number of rows in `sol`!")
     end
     return [
         mean(sol[3, burn:end] ./ (sol[1, burn:end] .+ sol[2, burn:end])),
