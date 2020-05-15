@@ -7,8 +7,11 @@ using Statistics
 - `burn::Int `: number of time steps to be thrown out (burn-in).
 ...
 """
-function top_heavy(sol::Array{T}, burn::Int = 0)::Array{T} where T
+function top_heavy(sol, burn::Int = 0)
     burn += 1 # could be time rather than number of time steps
+    if burn > size(sol)[2]
+        error("parameters: `burn` greater than number of row in `sol`!")
+    end
     return [
         mean(sol[3, burn:end] ./ (sol[1, burn:end] .+ sol[2, burn:end])),
         mean(sol[3, burn:end] ./ sol[1, burn:end]),
@@ -16,5 +19,5 @@ function top_heavy(sol::Array{T}, burn::Int = 0)::Array{T} where T
         mean(sol[1, burn:end] ./ sol[2, burn:end])
     ]
 end
-"""
 
+# top_heavy(sol, 100)
