@@ -2,7 +2,7 @@
 
 ## Installation
 
-Firs install a recent version of [Julia](https://julialang.org/) and the following packages:
+First install a recent version of [Julia](https://julialang.org/) and the following packages:
 
 
 |Package              | Links                                |
@@ -151,3 +151,21 @@ function foo!(x)
     return nothing
 end
 ```
+
+#### Figure plotting
+
+We will use the package [PyPlot](https://github.com/JuliaPy/PyPlot.jl) for plotting. Go [here](https://gist.github.com/gizmaa/7214002) for example coding with PyPlot. NOTE for Windows and MacOSX, matplotlib (what PyPlot is based on) is automatically installed.
+
+To automatically open plots outside of Atom, disable the Plot Pane in the UI Options of the Juno Settings.
+
+Whenever plotting a figure ensure that the code follows below:
+
+```julia
+let
+	plotname = figure()
+	plot()
+	plotoptions
+	return plotname
+end
+```
+ 
