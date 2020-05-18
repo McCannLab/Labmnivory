@@ -53,10 +53,12 @@ end
 let
     u0 = [1.0, 0.5, 0.1]
     t_span = (0.0, 1000.0)
-    par = OmnPar(ω = 0.0)
+    par = OmnPar(ω = 0.0, a_RP = 0)
 
     prob = ODEProblem(model!, u0, t_span, par)
     sol = solve(prob)
 
+    ts = figure()
     plot(sol.t, sol.u)
+    return ts
 end
