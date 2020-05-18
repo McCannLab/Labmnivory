@@ -7,19 +7,19 @@ using PyPlot
     r = 2.0
     K = 3.0
     # Consumer Parameters
-    a_RC = 1.1
+    a_RC = 0.4
     h_RC = 0.8
-    e_RC = 0.7
+    e_RC = 2.009
     m_C = 0.4
     # Predator Parameters
-    a_CP = 1.1
+    a_CP = 0.01
     h_CP = 0.6
-    e_CP = 0.6
+    e_CP = 5.0
     m_P = 0.2
     # Omnivory Parameters
     a_RP = 0.8
     h_RP = 0.9
-    e_RP = 0.4
+    e_RP = 2.0
     ω = 0.5
     # Forcing Parameters
     ## Sin amplitude
@@ -58,7 +58,7 @@ let
     prob = ODEProblem(model!, u0, t_span, par)
     sol = solve(prob)
 
-    ts = figure()
+    fig1 = figure()
     plot(sol.t, sol.u)
-    return ts
+    return fig1
 end

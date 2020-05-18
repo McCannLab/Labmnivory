@@ -154,18 +154,18 @@ end
 
 #### Figure plotting
 
-We will use the package [PyPlot](https://github.com/JuliaPy/PyPlot.jl) for plotting. Go [here](https://gist.github.com/gizmaa/7214002) for example coding with PyPlot. NOTE for Windows and MacOSX, matplotlib (what PyPlot is based on) is automatically installed.
+We will use the package [PyPlot](https://github.com/JuliaPy/PyPlot.jl) for plotting. Go [here](https://gist.github.com/gizmaa/7214002) for example coding with PyPlot.
 
 To automatically open plots outside of Atom, disable the Plot Pane in the UI Options of the Juno Settings.
 
 Whenever plotting a figure ensure that the code follows below:
 
 ```julia
-let
-	plotname = figure()
-	plot()
-	plotoptions
-	return plotname
-end
+    plot_name = figure()
+    plot()
+    plotoptions
+    return plot_name
 ```
+
+To ease figure creation, place plotting code in a let block.
  
