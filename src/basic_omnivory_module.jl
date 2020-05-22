@@ -1,6 +1,5 @@
 using Parameters
 using DifferentialEquations
-using PyPlot
 
 @with_kw mutable struct ModelPar
     # Logistic Parameters
@@ -31,7 +30,7 @@ using PyPlot
 end
 
 # # Forcing Function
-force_K(p, t) = p.A * sin(2 * π * t / p.B + p.𝛗 * π)
+force(p, t) = p.A * sin(2 * π * t / p.B + p.𝛗 * π)
 
 function model!(du, u, p, t)
     @unpack r, K = p
@@ -41,37 +40,11 @@ function model!(du, u, p, t)
     R, C, P = u
 
     # Force K
-    K += force_K(p, t)
+    K += force(p, t)
 
     du[1] = r * R * (1 - R / K) - a_RC * R * C / (1 + a_RC * h_RC * R) - ω * a_RP * R * P / (1 + ω * a_RP * h_RP * R + (1 - ω) * a_CP * h_CP * C)
     du[2] = e_RC * a_RC * R * C / (1 + a_RC * h_RC * R) - (1 - ω) * a_CP * C * P / (1 + ω * a_RP * h_RP * R + (1 - ω) * a_CP * h_CP * C) - m_C * C
     du[3] = (e_RP * ω * a_RP * R * P + e_CP * (1 - ω) * a_CP * C * P) / (1 + ω * a_RP * h_RP * R + (1 - ω) * a_CP * h_CP * C) - m_P * P
 
     return du
-end
-
-let
-    u0 = [1.0, 0.5, 0.1]
-    t_span = (0.0, 100.0)
-    chain_par = ModelPar(ω = 0.0, a_CP = 0.6, K = 2.0)
-    omn_par = ModelPar(ω = 0.3, a_CP = 0.6, K = 2.0)
-
-    prob = ODEProblem(model!, u0, t_span, chain_par)
-    sol_chain = solve(prob, abstol = 1e-8, reltol = 1e-8)
-
-    prob = ODEProblem(model!, u0, t_span, omn_par)
-    sol_omn = solve(prob, abstol = 1e-8, reltol = 1e-8)
-
-    fig = figure()
-    subplot(2, 1, 1)
-    plot(sol_chain.t, sol_chain.u)
-    title("Chain")
-
-    subplot(2, 1, 2)
-    plot(sol_omn.t, sol_omn.u)
-    title("Omnivory")
-
-    tight_layout()
-
-    return fig
 end
