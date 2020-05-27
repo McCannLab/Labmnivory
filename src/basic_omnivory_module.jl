@@ -32,6 +32,8 @@ end
 # # Forcing Function
 force(p, t) = p.A * sin(2 * π * t / p.B + p.𝛗 * π)
 
+pref(u, p) = p.ω * u[1] / (p.ω * u[1] + (1 - p.ω) * u[2])
+
 function model!(du, u, p, t)
     @unpack r, K = p
     @unpack a_RC, h_RC, e_RC, m_C = p
@@ -40,11 +42,14 @@ function model!(du, u, p, t)
     R, C, P = u
 
     # Force K
-    K += force(p, t)
+    #K += force(p, t)
 
-    du[1] = r * R * (1 - R / K) - a_RC * R * C / (1 + a_RC * h_RC * R) - ω * a_RP * R * P / (1 + ω * a_RP * h_RP * R + (1 - ω) * a_CP * h_CP * C)
-    du[2] = e_RC * a_RC * R * C / (1 + a_RC * h_RC * R) - (1 - ω) * a_CP * C * P / (1 + ω * a_RP * h_RP * R + (1 - ω) * a_CP * h_CP * C) - m_C * C
-    du[3] = (e_RP * ω * a_RP * R * P + e_CP * (1 - ω) * a_CP * C * P) / (1 + ω * a_RP * h_RP * R + (1 - ω) * a_CP * h_CP * C) - m_P * P
+    # setup the density dependent preference
+    Ω = pref(u, p)
+
+    du[1] = r * R * (1 - R / K) - a_RC * R * C / (1 + a_RC * h_RC * R) - Ω * a_RP * R * P / (1 + Ω * a_RP * h_RP * R + (1 - Ω) * a_CP * h_CP * C)
+    du[2] = e_RC * a_RC * R * C / (1 + a_RC * h_RC * R) - (1 - Ω) * a_CP * C * P / (1 + Ω * a_RP * h_RP * R + (1 - Ω) * a_CP * h_CP * C) - m_C * C
+    du[3] = (e_RP * Ω * a_RP * R * P + e_CP * (1 - Ω) * a_CP * C * P) / (1 + Ω * a_RP * h_RP * R + (1 - Ω) * a_CP * h_CP * C) - m_P * P
 
     return du
 end
