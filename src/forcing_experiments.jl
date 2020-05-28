@@ -31,7 +31,7 @@ let
     t_grid = range(0.0, t_end, length = 10000)
 
     # Chain
-    par_chain = ModelPar(a_CP = 0.3, ω = 0.0, A = 0.0, K = 3.0)
+    par_chain = ModelPar(a_CP = 0.3, ω = 0.0, K = 3.0)
 
     prob_chain = ODEProblem(model!, u0, t_span, deepcopy(par_chain))
     sol_chain = solve(prob_chain, reltol = 1e-8, abstol = 1e-8)
@@ -42,7 +42,7 @@ let
     sol_chain_mast_grid = sol_chain_mast(t_grid)
 
     # Omnivory
-    par_omn = ModelPar(a_CP = 0.3, ω = 0.05, A = 0.0, K = 3.0)
+    par_omn = ModelPar(a_CP = 0.3, ω = 0.05, K = 3.0, pref = adapt_pref)
 
     prob_omn = ODEProblem(model!, u0, t_span, deepcopy(par_omn), tstops = masting_times)
     sol_omn = solve(prob_omn, reltol = 1e-8, abstol = 1e-8)
@@ -78,8 +78,8 @@ let
     title("Omnivory")
 
     subplot(3, 1, 3)
-    plot(sol_omn_grid.t,  [pref(u, par_omn) for u in sol_omn_grid], color = "#000000")
-    plot(sol_omn_mast_grid.t,  [pref(u, par_omn) for u in sol_omn_mast_grid], color = "#ff2233")
+    plot(sol_omn_grid.t,  [adapt_pref(u, par_omn, 0.0) for u in sol_omn_grid], color = "#000000")
+    plot(sol_omn_mast_grid.t,  [adapt_pref(u, par_omn, 0.0) for u in sol_omn_mast_grid], color = "#ff2233")
     title("Preference")
 
     tight_layout()
