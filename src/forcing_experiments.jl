@@ -13,7 +13,7 @@ using PyPlot
 t_end = 55.0 * 10
 t_span = (0.0, t_end)
 #NOTE: the step time needs to be odd for the way I am doing this
-masting_times = (0:(2 * 55):t_end)[2:end]
+masting_times = (0:(55):t_end)[2:end]
 collect(masting_times)
 masting_event(u, t, integrator) = t ∈ masting_times
 function forcing!(integrator)
