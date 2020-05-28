@@ -12,6 +12,8 @@ fixed_pref(u, p, t) = p.ω
 @with_kw mutable struct ModelPar{F <: Function}
     # Logistic Parameters
     r = 2.0
+    ## `K_base` measings the underyling K outside of any forcing applied
+    K_base = 3.0
     K = 3.0
     # Consumer Parameters
     a_RC = 1.1

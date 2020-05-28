@@ -10,17 +10,22 @@ using PyPlot
 # Objectives are that we can see a response of omnivory in the face of this
 # variable productivity situation, and test that we are measuring omnivory
 # in a way that is enlightening.
-t_end = 55.0 * 10
+first_mast = 100.0
+mast_freq = 100.0
+mast_length = 10.0
+t_end = mast_freq * 5
 t_span = (0.0, t_end)
-#NOTE: the step time needs to be odd for the way I am doing this
-masting_times = (0:(55):t_end)[2:end]
-collect(masting_times)
-masting_event(u, t, integrator) = t ∈ masting_times
+
+mast_starts = first_mast:mast_freq:t_end
+mast_ends = mast_starts .+ mast_length
+mast_event_times = sort(union(mast_starts, mast_ends))
+
+masting_event(u, t, integrator) = t ∈ mast_event_times
 function forcing!(integrator)
-    if integrator.t % 2 == 0
-        integrator.p.K = 4.0
-    else
-        integrator.p.K = 3.0
+    if integrator.t ∈ mast_starts
+        integrator.p.K = 1.5 * integrator.p.K_base
+    elseif integrator.t ∈ mast_ends
+        integrator.p.K = integrator.p.K_base
     end
     return
 end
@@ -37,18 +42,18 @@ let
     sol_chain = solve(prob_chain, reltol = 1e-8, abstol = 1e-8)
     sol_chain_grid = sol_chain(t_grid)
 
-    prob_chain = ODEProblem(model!, u0, t_span, deepcopy(par_chain), tstops = masting_times)
+    prob_chain = ODEProblem(model!, u0, t_span, deepcopy(par_chain), tstops = mast_event_times)
     sol_chain_mast = solve(prob_chain, reltol = 1e-8, abstol = 1e-8, callback = cb)
     sol_chain_mast_grid = sol_chain_mast(t_grid)
 
     # Omnivory
     par_omn = ModelPar(a_CP = 0.3, ω = 0.05, K = 3.0, pref = adapt_pref)
 
-    prob_omn = ODEProblem(model!, u0, t_span, deepcopy(par_omn), tstops = masting_times)
+    prob_omn = ODEProblem(model!, u0, t_span, deepcopy(par_omn), tstops = mast_event_times)
     sol_omn = solve(prob_omn, reltol = 1e-8, abstol = 1e-8)
     sol_omn_grid = sol_omn(t_grid)
 
-    prob_omn = ODEProblem(model!, u0, t_span, deepcopy(par_omn), tstops = masting_times)
+    prob_omn = ODEProblem(model!, u0, t_span, deepcopy(par_omn), tstops = mast_event_times)
     sol_omn_mast = solve(prob_omn, reltol = 1e-8, abstol = 1e-8, callback = cb)
     sol_omn_mast_grid = sol_omn_mast(t_grid)
 
@@ -79,7 +84,7 @@ let
 
     subplot(3, 1, 3)
     plot(sol_omn_grid.t,  [adapt_pref(u, par_omn, 0.0) for u in sol_omn_grid], color = "#000000")
-    plot(sol_omn_mast_grid.t,  [adapt_pref(u, par_omn, 0.0) for u in sol_omn_mast_grid], color = "#ff2233")
+    plot(sol_omn_mast_grid.t,  [adapt_pref(u, par_omn, 0.0) for u in sol_omn_mast_grid], color = "#13b8dd")
     title("Preference")
 
     tight_layout()
