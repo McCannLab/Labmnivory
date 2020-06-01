@@ -60,15 +60,15 @@ let
     sol_omn_mast_grid = sol_omn_mast(t_grid)
 
     ## Fixed preference omnivory
-    par_fomn = ModelPar(a_CP = 0.25, ω = 0.1)
+    par_fomn = ModelPar(a_CP = 0.25, ω = 0.1, pref = fixed_pref)
 
     prob_fomn = ODEProblem(model!, u0, t_span, deepcopy(par_fomn), tstops = mast_event_times)
     sol_fomn = solve(prob_fomn, reltol = 1e-8, abstol = 1e-8)
-    sol_fomn_grid = sol_omn(t_grid)
+    sol_fomn_grid = sol_fomn(t_grid)
 
     prob_fomn = ODEProblem(model!, u0, t_span, deepcopy(par_fomn), tstops = mast_event_times)
     sol_fomn_mast = solve(prob_fomn, reltol = 1e-8, abstol = 1e-8, callback = cb)
-    sol_fomn_mast_grid = sol_omn_mast(t_grid)
+    sol_fomn_mast_grid = sol_fomn_mast(t_grid)
 
     # Layout
     fig = figure(figsize = (4, 8))
@@ -88,7 +88,7 @@ let
     xlim(t_start, t_end)
     ylim(0, y_max)
 
-    subplot(3, 1, 2)
+    subplot(3, 1, 3)
     plot(sol_omn_grid.t, sol_omn_grid[1, :], color = R_col, alpha = 0.5)
     plot(sol_omn_grid.t, sol_omn_grid[2, :], color = C_col, alpha = 0.5)
     plot(sol_omn_grid.t, sol_omn_grid[3, :], color = P_col, alpha = 0.5)
@@ -96,27 +96,29 @@ let
     plot(sol_omn_mast_grid.t, sol_omn_mast_grid[2, :], color = C_col, label = "C")
     plot(sol_omn_mast_grid.t, sol_omn_mast_grid[3, :], color = P_col, label = "P")
     legend()
-    title("Omnivory")
+    title("Omnivory [Adaptive]")
     xlim(t_start, t_end)
     ylim(0, y_max)
 
-    subplot(3, 1, 3)
-    plot(sol_omn_grid.t, [degree_omnivory(u, par_omn) for u in sol_omn_grid], color = "black")
-    plot(sol_omn_mast_grid.t, [degree_omnivory(u, par_omn) for u in sol_omn_mast_grid], color = "red")
-    plot(sol_fomn_mast_grid.t, [degree_omnivory(u, par_omn) for u in sol_fomn_mast_grid], color = "blue", alpha = 0.3)
-    title("Degree Omnivory")
-    xlim(t_start, t_end)
-
     # subplot(3, 1, 3)
-    # plot(sol_fomn_grid.t, sol_fomn_grid[1, :], color = R_col, alpha = 0.5)
-    # plot(sol_fomn_grid.t, sol_fomn_grid[2, :], color = C_col, alpha = 0.5)
-    # plot(sol_fomn_grid.t, sol_fomn_grid[3, :], color = P_col, alpha = 0.5)
-    # plot(sol_fomn_mast_grid.t, sol_fomn_mast_grid[1, :], color = R_col, label = "R")
-    # plot(sol_fomn_mast_grid.t, sol_fomn_mast_grid[2, :], color = C_col, label = "C")
-    # plot(sol_fomn_mast_grid.t, sol_fomn_mast_grid[3, :], color = P_col, label = "P")
-    # legend()
-    # title("Omnivory [Fixed]")
-    #
+    # plot(sol_omn_grid.t, [degree_omnivory(u, par_omn) for u in sol_omn_grid], color = "black")
+    # plot(sol_omn_mast_grid.t, [degree_omnivory(u, par_omn) for u in sol_omn_mast_grid], color = "red")
+    # plot(sol_fomn_mast_grid.t, [degree_omnivory(u, par_omn) for u in sol_fomn_mast_grid], color = "blue", alpha = 0.3)
+    # title("Degree Omnivory")
+    # xlim(t_start, t_end)
+
+     subplot(3, 1, 2)
+     plot(sol_fomn_grid.t, sol_fomn_grid[1, :], color = R_col, alpha = 0.5)
+     plot(sol_fomn_grid.t, sol_fomn_grid[2, :], color = C_col, alpha = 0.5)
+     plot(sol_fomn_grid.t, sol_fomn_grid[3, :], color = P_col, alpha = 0.5)
+     plot(sol_fomn_mast_grid.t, sol_fomn_mast_grid[1, :], color = R_col, label = "R")
+     plot(sol_fomn_mast_grid.t, sol_fomn_mast_grid[2, :], color = C_col, label = "C")
+     plot(sol_fomn_mast_grid.t, sol_fomn_mast_grid[3, :], color = P_col, label = "P")
+     legend()
+     title("Omnivory [Fixed]")
+     xlim(t_start, t_end)
+     ylim(0, y_max)
+    
     tight_layout()
     return fig
 end
