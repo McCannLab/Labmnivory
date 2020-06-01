@@ -71,12 +71,12 @@ let
     sol_fomn_mast_grid = sol_fomn_mast(t_grid)
 
     # Layout
-    fig = figure(figsize = (4, 8))
+    fig = figure(figsize = (8, 12))
     R_col = "#1f77b4"
     C_col = "#ff7f0e"
     P_col = "#2ca02c"
     y_max = 5
-    subplot(3, 1, 1)
+    subplot(3, 2, 1)
     plot(sol_chain_grid.t, sol_chain_grid[1, :], color = R_col, alpha = 0.5)
     plot(sol_chain_grid.t, sol_chain_grid[2, :], color = C_col, alpha = 0.5)
     plot(sol_chain_grid.t, sol_chain_grid[3, :], color = P_col, alpha = 0.5)
@@ -88,7 +88,12 @@ let
     xlim(t_start, t_end)
     ylim(0, y_max)
 
-    subplot(3, 1, 2)
+    subplot(3, 2, 2)
+    plot(sol_omn_grid.t, [degree_omnivory(u, par_omn) for u in sol_omn_grid], color = "black")
+    title("Degree Omnivory [Chain]")
+    xlim(t_start, t_end)
+
+    subplot(3, 2, 3)
     plot(sol_fomn_grid.t, sol_fomn_grid[1, :], color = R_col, alpha = 0.5)
     plot(sol_fomn_grid.t, sol_fomn_grid[2, :], color = C_col, alpha = 0.5)
     plot(sol_fomn_grid.t, sol_fomn_grid[3, :], color = P_col, alpha = 0.5)
@@ -100,7 +105,12 @@ let
     xlim(t_start, t_end)
     ylim(0, y_max)
 
-    subplot(3, 1, 3)
+    subplot(3, 2, 4)
+    plot(sol_fomn_mast_grid.t, [degree_omnivory(u, par_fomn) for u in sol_fomn_mast_grid], color = "black")
+    title("Degree Omnivory [Fixed]")
+    xlim(t_start, t_end)
+
+    subplot(3, 2, 5)
     plot(sol_omn_grid.t, sol_omn_grid[1, :], color = R_col, alpha = 0.5)
     plot(sol_omn_grid.t, sol_omn_grid[2, :], color = C_col, alpha = 0.5)
     plot(sol_omn_grid.t, sol_omn_grid[3, :], color = P_col, alpha = 0.5)
@@ -112,12 +122,10 @@ let
     xlim(t_start, t_end)
     ylim(0, y_max)
 
-    # subplot(3, 1, 3)
-    # plot(sol_omn_grid.t, [degree_omnivory(u, par_omn) for u in sol_omn_grid], color = "black")
-    # plot(sol_omn_mast_grid.t, [degree_omnivory(u, par_omn) for u in sol_omn_mast_grid], color = "red")
-    # plot(sol_fomn_mast_grid.t, [degree_omnivory(u, par_fomn) for u in sol_fomn_mast_grid], color = "blue", alpha = 0.3)
-    # title("Degree Omnivory")
-    # xlim(t_start, t_end)
+    subplot(3, 2, 6)
+    plot(sol_omn_mast_grid.t, [degree_omnivory(u, par_omn) for u in sol_omn_mast_grid], color = "black")
+    title("Degree Omnivory [Adaptive]")
+    xlim(t_start, t_end)
 
     tight_layout()
     return fig
