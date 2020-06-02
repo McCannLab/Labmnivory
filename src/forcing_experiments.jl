@@ -140,7 +140,8 @@ let
 
     subplot(3, 2, 6)
     plot(sol_omn_mast_grid.t, [degree_omnivory(u, par_omn) for u in sol_omn_mast_grid], color = "black")
-    plot(sol_omn_grid.t, [degree_omnivory(u, par_omn) for u in sol_omn_grid], color = "black", alpha = 0.3)
+    plot(sol_omn_grid.t,
+    [degree_omnivory(u, par_omn) for u in sol_omn_grid], color = "black", alpha = 0.3)
     title("Degree of Omnivory [Adaptive]")
     xlim(t_start, t_end)
     ylim(0, 1)
