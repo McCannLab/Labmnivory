@@ -60,23 +60,24 @@ let
     sol_omn_mast_grid = sol_omn_mast(t_grid)
 
     ## Fixed preference omnivory
-    par_fomn = ModelPar(a_CP = 0.25, ω = 0.1, pref = fixed_pref)
+    par_omn_fixed = ModelPar(a_CP = 0.25, ω = 0.1, pref = fixed_pref)
 
-    prob_fomn = ODEProblem(model!, u0, t_span, deepcopy(par_fomn), tstops = mast_event_times)
-    sol_fomn = solve(prob_fomn, reltol = 1e-8, abstol = 1e-8)
-    sol_fomn_grid = sol_fomn(t_grid)
+    prob_omn_fixed = ODEProblem(model!, u0, t_span, deepcopy(par_omn_fixed), tstops = mast_event_times)
+    sol_omn_fixed = solve(prob_omn_fixed, reltol = 1e-8, abstol = 1e-8)
+    sol_omn_fixed_grid = sol_omn_fixed(t_grid)
 
-    prob_fomn = ODEProblem(model!, u0, t_span, deepcopy(par_fomn), tstops = mast_event_times)
-    sol_fomn_mast = solve(prob_fomn, reltol = 1e-8, abstol = 1e-8, callback = cb)
-    sol_fomn_mast_grid = sol_fomn_mast(t_grid)
+    prob_omn_fixed_mast = ODEProblem(model!, u0, t_span, deepcopy(par_omn_fixed), tstops = mast_event_times)
+    sol_omn_fixed_mast = solve(prob_omn_fixed_mast, reltol = 1e-8, abstol = 1e-8, callback = cb)
+    sol_omn_fixed_mast_grid = sol_omn_fixed_mast(t_grid)
 
     # Layout
-    fig = figure(figsize = (4, 8))
+    fig = figure(figsize = (8, 9))
     R_col = "#1f77b4"
     C_col = "#ff7f0e"
     P_col = "#2ca02c"
     y_max = 5
-    subplot(3, 1, 1)
+
+    subplot(3, 2, 1)
     plot(sol_chain_grid.t, sol_chain_grid[1, :], color = R_col, alpha = 0.5)
     plot(sol_chain_grid.t, sol_chain_grid[2, :], color = C_col, alpha = 0.5)
     plot(sol_chain_grid.t, sol_chain_grid[3, :], color = P_col, alpha = 0.5)
@@ -84,23 +85,34 @@ let
     plot(sol_chain_mast_grid.t, sol_chain_mast_grid[2, :], color = C_col, label = "C")
     plot(sol_chain_mast_grid.t, sol_chain_mast_grid[3, :], color = P_col, label = "P")
     legend()
-    title("Chain")
+    title("Food Chain")
     xlim(t_start, t_end)
     ylim(0, y_max)
 
-    subplot(3, 1, 2)
-    plot(sol_fomn_grid.t, sol_fomn_grid[1, :], color = R_col, alpha = 0.5)
-    plot(sol_fomn_grid.t, sol_fomn_grid[2, :], color = C_col, alpha = 0.5)
-    plot(sol_fomn_grid.t, sol_fomn_grid[3, :], color = P_col, alpha = 0.5)
-    plot(sol_fomn_mast_grid.t, sol_fomn_mast_grid[1, :], color = R_col, label = "R")
-    plot(sol_fomn_mast_grid.t, sol_fomn_mast_grid[2, :], color = C_col, label = "C")
-    plot(sol_fomn_mast_grid.t, sol_fomn_mast_grid[3, :], color = P_col, label = "P")
+    subplot(3, 2, 2)
+    plot(sol_chain_grid.t, [degree_omnivory(u, par_chain) for u in sol_chain_grid], color = "black")
+    title("Degree of Omnivory [Chain]")
+    xlim(t_start, t_end)
+
+    subplot(3, 2, 3)
+    plot(sol_omn_fixed_grid.t, sol_omn_fixed_grid[1, :], color = R_col, alpha = 0.5)
+    plot(sol_omn_fixed_grid.t, sol_omn_fixed_grid[2, :], color = C_col, alpha = 0.5)
+    plot(sol_omn_fixed_grid.t, sol_omn_fixed_grid[3, :], color = P_col, alpha = 0.5)
+    plot(sol_omn_fixed_mast_grid.t, sol_omn_fixed_mast_grid[1, :], color = R_col, label = "R")
+    plot(sol_omn_fixed_mast_grid.t, sol_omn_fixed_mast_grid[2, :], color = C_col, label = "C")
+    plot(sol_omn_fixed_mast_grid.t, sol_omn_fixed_mast_grid[3, :], color = P_col, label = "P")
     legend()
-    title("Omnivory [Fixed]")
+    title("Passive Omnivory")
     xlim(t_start, t_end)
     ylim(0, y_max)
 
-    subplot(3, 1, 3)
+    subplot(3, 2, 4)
+    plot(sol_omn_fixed_mast_grid.t, [degree_omnivory(u, par_omn_fixed) for u in sol_omn_fixed_mast_grid], color = "black")
+    plot(sol_omn_fixed_grid.t, [degree_omnivory(u, par_omn_fixed) for u in sol_omn_fixed_grid], color = "black", alpha = 0.3)
+    title("Degree of Omnivory [Passive]")
+    xlim(t_start, t_end)
+
+    subplot(3, 2, 5)
     plot(sol_omn_grid.t, sol_omn_grid[1, :], color = R_col, alpha = 0.5)
     plot(sol_omn_grid.t, sol_omn_grid[2, :], color = C_col, alpha = 0.5)
     plot(sol_omn_grid.t, sol_omn_grid[3, :], color = P_col, alpha = 0.5)
@@ -108,16 +120,15 @@ let
     plot(sol_omn_mast_grid.t, sol_omn_mast_grid[2, :], color = C_col, label = "C")
     plot(sol_omn_mast_grid.t, sol_omn_mast_grid[3, :], color = P_col, label = "P")
     legend()
-    title("Omnivory [Adaptive]")
+    title("Adaptive Omnivory")
     xlim(t_start, t_end)
     ylim(0, y_max)
 
-    # subplot(3, 1, 3)
-    # plot(sol_omn_grid.t, [degree_omnivory(u, par_omn) for u in sol_omn_grid], color = "black")
-    # plot(sol_omn_mast_grid.t, [degree_omnivory(u, par_omn) for u in sol_omn_mast_grid], color = "red")
-    # plot(sol_fomn_mast_grid.t, [degree_omnivory(u, par_fomn) for u in sol_fomn_mast_grid], color = "blue", alpha = 0.3)
-    # title("Degree Omnivory")
-    # xlim(t_start, t_end)
+    subplot(3, 2, 6)
+    plot(sol_omn_mast_grid.t, [degree_omnivory(u, par_omn) for u in sol_omn_mast_grid], color = "black")
+    plot(sol_omn_grid.t, [degree_omnivory(u, par_omn) for u in sol_omn_grid], color = "black", alpha = 0.3)
+    title("Degree of Omnivory [Adaptive]")
+    xlim(t_start, t_end)
 
     tight_layout()
     return fig
