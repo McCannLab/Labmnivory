@@ -10,7 +10,7 @@ function adapt_pref(u, p, t)
 end
 
 function fixed_pref(u, p, t)
-    return p.ω
+    return p.Ω
 end
 
 # # Parameters need to be defined after above functions so they can have defaults
@@ -34,9 +34,11 @@ end
     a_RP = 0.8
     h_RP = 0.9
     e_RP = 0.4
-    ω = 0.5
+    Ω = 0.1
     # Forcing Function
     pref::F = fixed_pref
+    ## Used in the adaptive forcing to bias towards C or R
+    ω = 0.5
 end
 
 #NOTE: we could use these in the model, but I am scared of all the function call
