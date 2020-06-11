@@ -21,3 +21,9 @@ function top_heavy(sol, burn::Int = 0)
 end
 
 # top_heavy(sol, 100)
+
+function top_heaviness(u, ref)
+    R, C, P = u
+    return P/(R + C) * (ref[1] + ref[2])/ref[3]
+end
+
