@@ -22,8 +22,8 @@ end
 
 # top_heavy(sol, 100)
 
-function top_heaviness(u, ref)
+function top_heaviness(u, u0)
     R, C, P = u
-    return P/(R + C) * (ref[1] + ref[2])/ref[3]
+    return P/(R + C) * (u0[1] + u0[2]) / u0[3]
 end
 
