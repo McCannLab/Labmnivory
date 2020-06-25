@@ -37,7 +37,7 @@ function return_time_sum(sol, dt, threshold = 1e-12)
 end
 # use only one component
 function return_time(sol, id, dt, threshold = 1e-12)
-    tmp = [abs.(sol[id, k] .- sol[id, k+1]) for k in 1:length(sol)-1]
+    tmp = [abs.(sol[id, k] .- sol[id, k+1]) for k in 1:length(sol) - 1]
     return dt*findfirst(tmp .< threshold)
 end
 
@@ -51,7 +51,7 @@ end
 
 # Global asynchrony between 2 species
 function global_asyn(sol)
-    return crosscor(sol[1,:], sol[2,:], [0])
+    return crosscor(sol[1, :], sol[2, :], [0])
 end
 
 

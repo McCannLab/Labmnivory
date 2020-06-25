@@ -29,14 +29,15 @@ for (i, k) in enumerate(grad_K)
     par_chain = ModelPar(a_CP = 0.25, Ω = 0.0, K_base = k, K = k)
     par_omn_fixed = ModelPar(a_CP = 0.25, Ω = Ω, pref = fixed_pref, K_base = k, K = k)
     pars = [par_chain, par_omn_fixed]
-    sols = Any[]
+    sols = []
     for j in 1:3
         if j == 3
             # need to use sols[2] for active Omnivory
             eq = nlsolve((du, u) -> model!(du, u, pars[2], 0.0), sols[2][end]).zero
             ω = Ω * eq[2] / (Ω * eq[2] + (1 - Ω) * eq[1])
             par = ModelPar(a_CP = 0.25, Ω = Ω, pref = adapt_pref, K_base = k, K = k, ω = ω)
-        else par = pars[j]
+        else
+            par = pars[j]
         end
         prob_eq = ODEProblem(model!, u0, t_span, deepcopy(par))
         sol_eq = solve(prob_eq, reltol = 1e-8, abstol = 1e-8)
@@ -44,7 +45,7 @@ for (i, k) in enumerate(grad_K)
         sol = solve(prob, reltol = 1e-8, abstol = 1e-8, callback = cb)
         push!(sols, sol)
         # Write results
-        id = nK*(j-1) + i
+        id = nK * (j-1) + i
         println(id)
         s_all = sol(t_all)
         res_K[id, :cv_P] = global_cv(s_all)[3]
@@ -82,7 +83,8 @@ for (i, e) in enumerate(grad_eRP)
             eq = nlsolve((du, u) -> model!(du, u, pars[2], 0.0), sols[2][end]).zero
             ω = Ω * eq[2] / (Ω * eq[2] + (1 - Ω) * eq[1])
             par = ModelPar(a_CP = 0.25, Ω = Ω, pref = adapt_pref, e_RP = e, ω = ω)
-        else par = pars[j]
+        else
+            par = pars[j]
         end
         prob_eq = ODEProblem(model!, u0, t_span, deepcopy(par))
         sol_eq = solve(prob_eq, reltol = 1e-8, abstol = 1e-8)
@@ -90,7 +92,7 @@ for (i, e) in enumerate(grad_eRP)
         sol = solve(prob, reltol = 1e-8, abstol = 1e-8, callback = cb)
         push!(sols, sol)
         # Write results
-        id = neRP*(j-1) + i
+        id = neRP * (j-1) + i
         s_all = sol(t_all)
         println(id)
         res_eRP[id, :cv_P] = global_cv(sol(t_aft))[3]
@@ -118,7 +120,7 @@ dfs = [
     res_K[res_K.foodweb .== "omn_fixed", :],
     res_K[res_K.foodweb .== "omn", :]
     ]
-for (k, j) in enumerate([3 4 5 6])
+for (k, j) in enumerate([3, 4, 5, 6])
     for i in 1:3
         subplot(4, 2, 2*k - 1)
         plot(dfs[i][:, :K], dfs[i][:, j], color = cls[i], linestyle = lss[i], label = lbs[i])
@@ -139,7 +141,7 @@ dfs = [
     ]
 for (k, j) in enumerate([3 4 5 6])
     for i in 1:3
-        subplot(4, 2, 2*k)
+        subplot(4, 2, 2 * k)
         plot(dfs[i][:, :e_RP], dfs[i][:, j], color = cls[i], linestyle = lss[i])
     end
     if j ∈ [6]
