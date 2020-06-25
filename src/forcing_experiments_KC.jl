@@ -37,13 +37,13 @@ cb = DiscreteCallback(masting_event, forcing!)
 
 
 
-
-
 let
     u0 = [1.0, 1.5, 1.5]
-    t_grid = range(0.0, t_end, length = 10000)
-    t_start = 75.0
-
+    dt = .01
+    t_grid = 0.0:dt:t_end
+    t_start = 88.0
+    wind = 500  # 100 = 1 time unit
+    t_wind = (wind * .5 * dt):dt:(t_end - wind * .5 * dt)
     # The global basic level of "Omnivory" we are looking at:
     Ω = 0.1
 
@@ -84,94 +84,98 @@ let
     sol_omn_mast = solve(prob_omn, reltol = 1e-8, abstol = 1e-8, callback = cb)
     sol_omn_mast_grid = sol_omn_mast(t_grid)
 
-
     # Layout
     fig = figure(figsize = (8, 9))
-    R_col = "#1f77b4"
-    C_col = "#ff7f0e"
-    P_col = "#2ca02c"
+    cols = ["#1f77b4", "#ff7f0e", "#2ca02c"]
+    labs = ["R", "C", "P"]
     ## Time series axis limits
     y_max = 5
 
 
+    # FIG 3A
     ## Food Chain
-    subplot(3, 2, 1)
-    plot(sol_chain_grid.t, sol_chain_grid[1, :], color = R_col, alpha = 0.5)
-    plot(sol_chain_grid.t, sol_chain_grid[2, :], color = C_col, alpha = 0.5)
-    plot(sol_chain_grid.t, sol_chain_grid[3, :], color = P_col, alpha = 0.5)
-    plot(sol_chain_mast_grid.t, sol_chain_mast_grid[1, :], color = R_col, label = "R")
-    plot(sol_chain_mast_grid.t, sol_chain_mast_grid[2, :], color = C_col, label = "C")
-    plot(sol_chain_mast_grid.t, sol_chain_mast_grid[3, :], color = P_col, label = "P")
+    subplot(3, 1, 1)
+    for i in 1:3
+        plot(sol_chain_grid.t, sol_chain_grid[i, :], color = cols[i],
+            alpha = 0.5)
+        plot(sol_chain_mast_grid.t, sol_chain_mast_grid[i, :], color = cols[i], label = labs[i])
+    end
     legend()
     title("Food Chain")
     xlim(t_start, t_end)
     ylim(0, y_max)
-
-
     ## Omnivory [Fixed]
-    subplot(3, 2, 3)
-    plot(sol_omn_fixed_grid.t, sol_omn_fixed_grid[1, :], color = R_col, alpha = 0.5)
-    plot(sol_omn_fixed_grid.t, sol_omn_fixed_grid[2, :], color = C_col, alpha = 0.5)
-    plot(sol_omn_fixed_grid.t, sol_omn_fixed_grid[3, :], color = P_col, alpha = 0.5)
-    plot(sol_omn_fixed_mast_grid.t, sol_omn_fixed_mast_grid[1, :], color = R_col, label = "R")
-    plot(sol_omn_fixed_mast_grid.t, sol_omn_fixed_mast_grid[2, :], color = C_col, label = "C")
-    plot(sol_omn_fixed_mast_grid.t, sol_omn_fixed_mast_grid[3, :], color = P_col, label = "P")
-    # legend()
+    subplot(3, 1, 2)
+    for i in 1:3
+        plot(sol_omn_fixed_grid.t, sol_omn_fixed_grid[i, :], color = cols[i],
+            alpha = 0.5)
+        plot(sol_omn_fixed_mast_grid.t, sol_omn_fixed_mast_grid[i, :], color = cols[i], label = labs[i])
+    end
     title("Omnivory [Passive]")
-    xlim(t_start, t_end)
+    xlim(t_start, t_end .- 5)
     ylim(0, y_max)
-
-
-    ## Omnivory [Adaptive]
-    subplot(3, 2, 5)
-    plot(sol_omn_grid.t, sol_omn_grid[1, :], color = R_col, alpha = 0.5)
-    plot(sol_omn_grid.t, sol_omn_grid[2, :], color = C_col, alpha = 0.5)
-    plot(sol_omn_grid.t, sol_omn_grid[3, :], color = P_col, alpha = 0.5)
-    plot(sol_omn_mast_grid.t, sol_omn_mast_grid[1, :], color = R_col, label = "R")
-    plot(sol_omn_mast_grid.t, sol_omn_mast_grid[2, :], color = C_col, label = "C")
-    plot(sol_omn_mast_grid.t, sol_omn_mast_grid[3, :], color = P_col, label = "P")
-    # legend()
-    title("Omnivory [Adaptive]")
-    xlim(t_start, t_end)
+    ## Omnivory [Responsive]
+    subplot(3, 1, 3)
+    for i in 1:3
+        plot(sol_omn_grid.t, sol_omn_grid[i, :], color = cols[i], alpha = 0.5)
+        plot(sol_omn_mast_grid.t, sol_omn_mast_grid[i, :], color = cols[i], label = labs[i])
+    end
+    title("Omnivory [Responsive]")
+    xlim(t_start, t_end .- 5)
     ylim(0, y_max)
 
 
 
-    #
-    subplot(3, 2, 2)
+    # FIG 3B
+    subplot(5, 1, 2)
     plot(sol_chain_grid.t, [top_heaviness(u, sol_chain_mast_grid[4001]) for u in sol_chain_mast_grid], color = "black", linestyle = "--", label = "Chain")
     plot(sol_chain_grid.t, [top_heaviness(u, sol_omn_fixed_mast_grid[4001]) for u in sol_omn_fixed_mast_grid], color = "black", label = "Passive")
     plot(sol_chain_grid.t, [top_heaviness(u, sol_omn_mast_grid[4001]) for u in sol_omn_mast_grid], color = "grey", label = "Active")
     title("Top heaviness")
-    legend()
-    xlim(t_start, t_end)
+    xlim(t_start, t_end .- 5)
     ylim(0.5, 2)
 
-
-    subplot(3, 2, 4)
-    # plot(sol_chain_grid.t, [degree_omnivory(u, par_chain) for u in sol_chain_grid], color = "black", linestyle="--", label = "Chain")
+    subplot(5, 1, 1)
     plot(sol_omn_fixed_mast_grid.t, [degree_omnivory(u, par_omn_fixed) for u in sol_omn_fixed_mast_grid], color = "black", label = "Passive")
-    plot(sol_omn_mast_grid.t, [degree_omnivory(u, par_omn) for u in sol_omn_mast_grid], color = "grey", label = "Active")
+    plot(sol_omn_mast_grid.t, [degree_omnivory(u, par_omn) for u in sol_omn_mast_grid], color = "grey", label = "[Responsive")
     title("Degree of Omnivory")
-    # legend()
-    xlim(t_start, t_end)
+    xlim(t_start, t_end .- 5)
     ylim(0, 1)
 
-
-
-    subplot(3, 2, 6)
-    plot(cv(sol_omn_fixed_mast_grid[3, :], 400)[3000:end], color = "black", linestyle="--", label = "Chain")
-    plot(cv(sol_chain_mast_grid[3, :], 400)[3000:end], color = "black", label = "Passive")
-    plot(cv(sol_omn_mast_grid[3, :], 400)[3000:end], color = "grey", label = "Active")
-    # plot(asynchrony(sol_omn_fixed_mast_grid[1:2, :], 500)[3000:end], color = "black", label = "Passive")
-    # plot(asynchrony(sol_omn_mast_grid[1:2, :], 500)[3000:end], color = "grey", label = "Active")
-    # plot(asynchrony(sol_omn_fixed_mast_grid[[1, 2],:], 200), color = "black", label = "Passive")
-    # plot(asynchrony(sol_omn_mast_grid[[1, 2],:], 200), color = "grey", label = "Active")
+    subplot(5, 1, 3)
+    plot(t_wind, cv(sol_chain_mast_grid[3, :], wind), color = "black", linestyle = "--", label = "Chain")
+    plot(t_wind, cv(sol_omn_fixed_mast_grid[3, :], wind), color = "black", label = "Passive")
+    plot(t_wind, cv(sol_omn_mast_grid[3, :], wind), color = "grey", label = "Responsive")
     title("CV of C")
-    ylim(-.01, .17)
+    xlim(t_start, t_end .- 5)
+    ylim(-.01, .13)
+    # global_cv(sol_chain_mast_grid)[3]
+    # global_cv(sol_omn_fixed_mast_grid)[3]
+    # global_cv(sol_chain_mast_grid)[3]
+    legend()
 
+    subplot(5, 1, 4)
+    plot(t_wind, asynchrony(sol_chain_mast_grid, wind), color = "black", linestyle = "--", label = "Chain")
+    plot(t_wind, asynchrony(sol_omn_fixed_mast_grid, wind), color = "black", label = "Passive")
+    plot(t_wind, asynchrony(sol_omn_mast_grid, wind), color = "grey", label = "Responsive")
+    title("Asynchrony C-R")
+    xlim(t_start, t_end .- 5)
+    ylim(-.3, .3)
+    # global_asyn(sol_chain_mast_grid)
+    # global_asyn(sol_omn_fixed_mast_grid)
+    # global_asyn(sol_chain_mast_grid)
 
+    subplot(5, 1, 5)
+    plot(t_wind, auc(sol_chain_mast_grid[3, :], sol_chain_grid[3, :], dt, wind), color = "black", linestyle = "--", label = "Chain")
+    plot(t_wind, auc(sol_omn_fixed_mast_grid[3, :], sol_omn_fixed_grid[3, :], dt, wind), color = "black", label = "Passive")
+    plot(t_wind, auc(sol_omn_mast_grid[3, :], sol_omn_grid[3, :], dt, wind), color = "grey", label = "Responsive")
+    title("AUC C")
+    xlim(t_start, t_end .- 5)
+    ylim(-.1, 3)
+    # global_auc(sol_chain_mast_grid, sol_chain_grid, dt)[3]
+    # global_auc(sol_omn_fixed_mast_grid, sol_omn_fixed_grid, dt)[3]
+    # global_auc(sol_omn_mast_grid, sol_omn_grid, dt)[3]
 
-    tight_layout()
+    # tight_layout()
     return fig
 end
