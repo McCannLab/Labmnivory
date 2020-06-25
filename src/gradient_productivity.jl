@@ -45,7 +45,7 @@ for (i, k) in enumerate(grad_K)
         sol = solve(prob, reltol = 1e-8, abstol = 1e-8, callback = cb)
         push!(sols, sol)
         # Write results
-        id = nK * (j-1) + i
+        id = nK * (j - 1) + i
         println(id)
         s_all = sol(t_all)
         res_K[id, :cv_P] = global_cv(s_all)[3]
@@ -92,7 +92,7 @@ for (i, e) in enumerate(grad_eRP)
         sol = solve(prob, reltol = 1e-8, abstol = 1e-8, callback = cb)
         push!(sols, sol)
         # Write results
-        id = neRP * (j-1) + i
+        id = neRP * (j - 1) + i
         s_all = sol(t_all)
         println(id)
         res_eRP[id, :cv_P] = global_cv(sol(t_aft))[3]
@@ -122,7 +122,7 @@ dfs = [
     ]
 for (k, j) in enumerate([3, 4, 5, 6])
     for i in 1:3
-        subplot(4, 2, 2*k - 1)
+        subplot(4, 2, 2 * k - 1)
         plot(dfs[i][:, :K], dfs[i][:, j], color = cls[i], linestyle = lss[i], label = lbs[i])
     end
     if k == 1
