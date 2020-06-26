@@ -39,11 +39,11 @@ cb = DiscreteCallback(masting_event, forcing!)
 
 let
     u0 = [1.0, 1.5, 1.5]
-    dt = .01
+    dt = 0.01
     t_grid = 0.0:dt:t_end
     t_start = 88.0
     wind = 500  # 100 = 1 time unit
-    t_wind = (wind * .5 * dt):dt:(t_end - wind * .5 * dt)
+    t_wind = (wind * 0.5 * dt):dt:(t_end - wind * 0.5 * dt)
     # The global basic level of "Omnivory" we are looking at:
     Ω = 0.1
 
@@ -86,7 +86,7 @@ let
 
     # Layout
     fig = figure(figsize = (8, 9))
-    cols = ["#1f77b4", "#ff7f0e", "#2ca02c"]
+    colors = ["#1f77b4", "#ff7f0e", "#2ca02c"]
     labs = ["R", "C", "P"]
     ## Time series axis limits
     y_max = 5
@@ -96,9 +96,8 @@ let
     ## Food Chain
     subplot(3, 1, 1)
     for i in 1:3
-        plot(sol_chain_grid.t, sol_chain_grid[i, :], color = cols[i],
-            alpha = 0.5)
-        plot(sol_chain_mast_grid.t, sol_chain_mast_grid[i, :], color = cols[i], label = labs[i])
+        plot(sol_chain_grid.t, sol_chain_grid[i, :], color = colors[i], alpha = 0.5)
+        plot(sol_chain_mast_grid.t, sol_chain_mast_grid[i, :], color = colors[i], label = labs[i])
     end
     legend()
     title("Food Chain")
@@ -107,9 +106,8 @@ let
     ## Omnivory [Fixed]
     subplot(3, 1, 2)
     for i in 1:3
-        plot(sol_omn_fixed_grid.t, sol_omn_fixed_grid[i, :], color = cols[i],
-            alpha = 0.5)
-        plot(sol_omn_fixed_mast_grid.t, sol_omn_fixed_mast_grid[i, :], color = cols[i], label = labs[i])
+        plot(sol_omn_fixed_grid.t, sol_omn_fixed_grid[i, :], color = colors[i], alpha = 0.5)
+        plot(sol_omn_fixed_mast_grid.t, sol_omn_fixed_mast_grid[i, :], color = colors[i], label = labs[i])
     end
     title("Omnivory [Passive]")
     xlim(t_start, t_end .- 5)
@@ -117,8 +115,8 @@ let
     ## Omnivory [Responsive]
     subplot(3, 1, 3)
     for i in 1:3
-        plot(sol_omn_grid.t, sol_omn_grid[i, :], color = cols[i], alpha = 0.5)
-        plot(sol_omn_mast_grid.t, sol_omn_mast_grid[i, :], color = cols[i], label = labs[i])
+        plot(sol_omn_grid.t, sol_omn_grid[i, :], color = colors[i], alpha = 0.5)
+        plot(sol_omn_mast_grid.t, sol_omn_mast_grid[i, :], color = colors[i], label = labs[i])
     end
     title("Omnivory [Responsive]")
     xlim(t_start, t_end .- 5)
@@ -148,7 +146,7 @@ let
     plot(t_wind, cv(sol_omn_mast_grid[3, :], wind), color = "grey", label = "Responsive")
     title("CV of C")
     xlim(t_start, t_end .- 5)
-    ylim(-.01, .13)
+    ylim(-0.01, 0.13)
     # global_cv(sol_chain_mast_grid)[3]
     # global_cv(sol_omn_fixed_mast_grid)[3]
     # global_cv(sol_chain_mast_grid)[3]
@@ -160,7 +158,7 @@ let
     plot(t_wind, asynchrony(sol_omn_mast_grid, wind), color = "grey", label = "Responsive")
     title("Asynchrony C-R")
     xlim(t_start, t_end .- 5)
-    ylim(-.3, .3)
+    ylim(-0.3, 0.3)
     # global_asyn(sol_chain_mast_grid)
     # global_asyn(sol_omn_fixed_mast_grid)
     # global_asyn(sol_chain_mast_grid)
@@ -171,7 +169,7 @@ let
     plot(t_wind, auc(sol_omn_mast_grid[3, :], sol_omn_grid[3, :], dt, wind), color = "grey", label = "Responsive")
     title("AUC C")
     xlim(t_start, t_end .- 5)
-    ylim(-.1, 3)
+    ylim(-0.1, 3)
     # global_auc(sol_chain_mast_grid, sol_chain_grid, dt)[3]
     # global_auc(sol_omn_fixed_mast_grid, sol_omn_fixed_grid, dt)[3]
     # global_auc(sol_omn_mast_grid, sol_omn_grid, dt)[3]
