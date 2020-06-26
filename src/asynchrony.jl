@@ -1,13 +1,23 @@
-using Statistics: cov, std, mean
+using Statistics: cov, mean, std
 using StatsBase: crosscor
 
 # NB `sol` can be subset (e.g. sol[:, [1 3]]) to obtain the desired pair of species
 function asynchrony(sol, wind = 500)
     ws1 = floor(Int, wind / 2)
     ws2 = wind - ws1
-    out = zeros(size(sol)[2] - wind)
+    out = zeros(size(sol, 2) - wind)
     for i in (ws1 + 1):(size(sol)[2] - ws2)
         out[i - ws1] = cov(sol[1, (i - ws1):(i + ws2 - 1)], sol[2, (i - ws1):(i + ws2 - 1)])
+    end
+    return out
+end
+
+function asynchrony_cc(sol, wind = 500)
+    ws1 = floor(Int, wind / 2)
+    ws2 = wind - ws1
+    out = zeros(size(sol, 2) - wind)
+    for i in (ws1 + 1):(size(sol)[2] - ws2)
+        out[i - ws1] = crosscor(sol[1, (i - ws1):(i + ws2 - 1)], sol[2, (i - ws1):(i + ws2 - 1)], [0])[1]
     end
     return out
 end
@@ -20,6 +30,17 @@ function cv(val, wind = 500)
     for i in (ws1 + 1):(length(val) - ws2)
         tmp = val[(i - ws1):(i + ws2 - 1)]
         out[i - ws1] = std(tmp) / mean(tmp)
+    end
+    return out
+end
+
+
+function auc(val, val_equil, dt, wind = 500)
+    ws1 = floor(Int, wind / 2)
+    ws2 = wind - ws1
+    out = zeros(length(val) - wind)
+    for i in (ws1 + 1):(length(val) - ws2)
+        out[i - ws1] = dt * sum(abs.(val[(i - ws1):(i + ws2 - 1)] .- l_equil[(i - ws1):(i + ws2 - 1)]))
     end
     return out
 end
@@ -51,12 +72,12 @@ end
 
 # Global asynchrony between 2 species
 function global_asyn(sol)
-    return crosscor(sol[1, :], sol[2, :], [0])
+    # return crosscor(sol[1, :], sol[2, :], [0])
+    return cov(sol[1, :], sol[2, :])
 end
 
 
 # Global area under the curve
-
 function global_auc(sol, sol_equil, dt)
     return dt*sum(abs.(sol - sol_equil), dims = 2)
 end
