@@ -1,4 +1,5 @@
 include("basic_omnivory_module.jl")
+using DifferentialEquations
 using PyPlot
 
 first_mast = 100.0

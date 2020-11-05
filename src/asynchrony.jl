@@ -35,7 +35,7 @@ function cv(val, wind = 500)
 end
 
 
-function auc(val, val_equil, dt, wind = 500)
+function auc(val, l_equil, dt, wind = 500)
     ws1 = floor(Int, wind / 2)
     ws2 = wind - ws1
     out = zeros(length(val) - wind)
@@ -54,12 +54,12 @@ end
 # the end of the simulation.
 function return_time_sum(sol, dt, threshold = 1e-12)
     tmp = sum(abs.(sol[2:end] .- sol[1:end-1]), dims = 1)
-    return dt*findfirst(tmp .< threshold)[2]
+    return dt * findfirst(tmp .< threshold)[2]
 end
 # use only one component
 function return_time(sol, id, dt, threshold = 1e-12)
     tmp = [abs.(sol[id, k] .- sol[id, k+1]) for k in 1:length(sol) - 1]
-    return dt*findfirst(tmp .< threshold)
+    return dt * findfirst(tmp .< threshold)
 end
 
 
@@ -79,5 +79,5 @@ end
 
 # Global area under the curve
 function global_auc(sol, sol_equil, dt)
-    return dt*sum(abs.(sol - sol_equil), dims = 2)
+    return dt * sum(abs.(sol - sol_equil), dims = 2)
 end

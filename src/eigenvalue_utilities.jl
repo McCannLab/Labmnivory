@@ -1,4 +1,4 @@
-using LinearAlgebra
+using LinearAlgebra: eigvals
 using ForwardDiff
 
 function rhs(u, p)
@@ -8,4 +8,4 @@ function rhs(u, p)
 end
 
 cmat(u, p) = ForwardDiff.jacobian(x -> rhs(x, p), u)
-λ1_stability(p) = maximum(real.(eigvals(cmat(p))))
+λ1_stability(u, p) = maximum(real.(eigvals(cmat(u, p))))

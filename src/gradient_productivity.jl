@@ -5,7 +5,7 @@ include("top_heavy.jl")
 include("asynchrony.jl")
 include("masting_event.jl")
 
-grad_K = 2.2:.1:4
+grad_K = 2.2:0.1:4
 nK = length(grad_K)
 grad_eRP = .02:.02:.5
 neRP = length(grad_eRP)
