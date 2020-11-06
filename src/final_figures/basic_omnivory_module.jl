@@ -86,4 +86,11 @@ end
 
 find_eq(u, p) = nlsolve((du, u) -> model!(du, u, p, zero(u)), u).zero
 cmat(u, p) = ForwardDiff.jacobian(x -> rhs(x, p), u)
-λ1_stability(u, p) = maximum(real.(eigvals(cmat(u, p))))
+
+"""M is the community matrix, we can be calculated with `cmat(u, p)`"""
+λ1_stability(M) = maximum(real.(eigvals(M)))
+
+"""M is the community matrix, we can be calculated with `cmat(u, p)`
+Note: `\nu` is the what to input `ν` which looks a bit to much like `v` for my taste
+"""
+ν_stability(M) = λ1_stability((M + M') / 2)
