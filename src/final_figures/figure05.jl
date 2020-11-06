@@ -206,6 +206,7 @@ let
     plt.bar(r2, g2, width = bar_width, edgecolor = "white", label = "C")
     plt.bar(r3, g3, width = bar_width, edgecolor = "white", label = "P")
     
+    #TODO: Fix this up so we get meaninful x-axis labels
     # Add xticks on the middle of the group bars
     #plt.xlabel("State Variable", fontweight = "bold")
     #plt.xticks([r + bar_width for r in 0:(length(bars1))], ["R", "C", "P"])
@@ -215,13 +216,30 @@ let
     plt.legend()
 
     subplot(3, 2, 6)
-    x_loc = [0, 1, 2]
-    x_labels = ["FC", "P", "A"]
-    maxs = maximum.([sol_chain_grid[2, :], sol_omn_fixed_grid[2, :], sol_omn[2, :]])
-    mins = minimum.([sol_chain_grid[2, :], sol_omn_fixed_grid[2, :], sol_omn[2, :]])
-    plt.bar(x_loc, maxs .- mins)
-    plt.xticks(x_loc, x_labels)
-    ylabel("Cmax - Cmin")
+    
+    g1mm = [
+        maximum(sol_chain_grid[1, :]) - minimum(sol_chain_grid[1, :]),
+        maximum(sol_omn_fixed_grid[1, :]) - minimum(sol_omn_fixed_grid[1, :]),
+        maximum(sol_omn_grid[1, :]) - minimum(sol_omn_grid[1, :])
+    ]
+    g2mm = [
+        maximum(sol_chain_grid[2, :]) - minimum(sol_chain_grid[2, :]),
+        maximum(sol_omn_fixed_grid[2, :]) - minimum(sol_omn_fixed_grid[2, :]),
+        maximum(sol_omn_grid[2, :]) - minimum(sol_omn_grid[2, :])
+    ]
+    g3mm = [
+        maximum(sol_chain_grid[3, :]) - minimum(sol_chain_grid[3, :]),
+        maximum(sol_omn_fixed_grid[3, :]) - minimum(sol_omn_fixed_grid[3, :]),
+        maximum(sol_omn_grid[3, :]) - minimum(sol_omn_grid[3, :])
+    ]
+        
+    # Make the plot
+    plt.bar(r1, g1mm, width = bar_width, edgecolor = "white", label = "R")
+    plt.bar(r2, g2mm, width = bar_width, edgecolor = "white", label = "C")
+    plt.bar(r3, g3mm, width = bar_width, edgecolor = "white", label = "P")
+    ylabel("Max - Min")
+
+    plt.legend()
             
     tight_layout()
     return fig
