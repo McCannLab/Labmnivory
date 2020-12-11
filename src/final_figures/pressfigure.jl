@@ -19,6 +19,22 @@ end
 
 cb_press = DiscreteCallback(press_event, forcing_press!)
 
+
+function find_times_hit_equil(data)
+    eq = data[1,end], data[2,end], data[3,end]
+    times = zeros(3)
+    for animal in 1:3
+        for i in 20:length(data)
+            if isapprox(data[animal,i],eq[animal], atol = 0.001)
+                times[animal] = data.t[i]
+                break
+            end
+        end
+    end
+    return times
+end
+
+
 let
     u0 = [1.0, 1.5, 1.5]
     t_end = 300
@@ -41,6 +57,7 @@ let
     prob_chain_press = ODEProblem(model!, u0, t_span, deepcopy(par_chain), tstops = press_start)
     sol_chain_press = solve(prob_chain_press, reltol = 1e-8, abstol = 1e-8, callback = cb_press)
     sol_chain_press_grid = sol_chain_press(t_grid)
+    chain_press_hit_equil = find_times_hit_equil(sol_chain_press(t_press))
 
     ## Passive Omnivory
     par_omn_fixed = ModelPar(a_CP = 0.25, Ω = Ω, pref = fixed_pref)
@@ -53,6 +70,7 @@ let
     prob_omn_fixed_press = ODEProblem(model!, u0, t_span, deepcopy(par_omn_fixed), tstops = press_start)
     sol_omn_fixed_press = solve(prob_omn_fixed_press, reltol = 1e-8, abstol = 1e-8, callback = cb_press)
     sol_omn_fixed_press_grid = sol_omn_fixed_press(t_grid)
+    fixed_press_hit_equil = find_times_hit_equil(sol_omn_fixed_press(t_press))
 
     deg_omn_fixed_beforepress = round(degree_omnivory(sol_omn_fixed_press_grid.u[1], par_omn_fixed), digits = 2)
     deg_omn_fixed_afterpress = round(degree_omnivory(sol_omn_fixed_press_grid.u[end], par_omn_fixed_afterpress), digits = 2)
@@ -73,12 +91,12 @@ let
     prob_omn_responsive_press = ODEProblem(model!, u0, t_span, deepcopy(par_omn_responsive), tstops = press_start)
     sol_omn_responsive_press = solve(prob_omn_responsive, reltol = 1e-8, abstol = 1e-8, callback = cb_press)
     sol_omn_responsive_press_grid = sol_omn_responsive_press(t_grid)
+    responsive_press_hit_equil = find_times_hit_equil(sol_omn_responsive_press(t_press))
 
     deg_omn_responsive_beforepress = round(degree_omnivory(sol_omn_responsive_press_grid.u[1], par_omn_responsive), digits = 2)
     deg_omn_responsive_afterpress = round(degree_omnivory(sol_omn_responsive_press_grid.u[end], par_omn_responsive_afterpress), digits = 2)
     max_deg_omn_responsive = round(maximum([degree_omnivory(u, par_omn_responsive) for u in sol_omn_responsive_press_grid]), digits = 2)
 
-    # println("$deg_omn_responsive_beforepress jjhjh")
     # Eigenvalue analysis
     ## Chain
     eq_chain = find_eq(sol_chain[end], par_chain_afterpress)
@@ -101,58 +119,27 @@ let
     omn_fixed_overshoot(t) = abs.(sol_omn_fixed_press(t) .- eq_omn_fixed)
     omn_responsive_overshoot(t) = abs.(sol_omn_responsive_press(t) .- eq_omn_responsive)
 
-    # let
-    #     t_check = range(press_start, t_end, length = 1000)
-    #     figure()
-    #     subplot(3, 1, 1)
-    #     plot(t_check, chain_overshoot.(t_check))
-    #     subplot(3, 1, 2)
-    #     plot(t_check, omn_fixed_overshoot.(t_check))
-    #     subplot(3, 1, 3)
-    #     plot(t_check, omn_press_overshoot.(t_check))
-    # end
+    function overshoot(animal, t_end)
+        return [quadgk(t -> chain_overshoot(t)[animal], chain_press_hit_equil[animal], t_end)[1],
+        quadgk(t -> omn_fixed_overshoot(t)[animal], fixed_press_hit_equil[animal], t_end)[1],
+        quadgk(t -> omn_responsive_overshoot(t)[animal], responsive_press_hit_equil[animal], t_end)[1]]
+    end
 
+    resource_OS = overshoot(1, t_end)
+    consumer_OS = overshoot(2, t_end)
+    predator_OS = overshoot(3, t_end)
 
-    #NOTE: I am not yet dealing with looking for the peak of the Resource to start integration -- this is the naive approach of just using the start of the pressing event
-    chain_OS = [quadgk(t -> chain_overshoot(t)[1], press_start, t_end)[1],
-                quadgk(t -> chain_overshoot(t)[2], press_start, t_end)[1],
-                quadgk(t -> chain_overshoot(t)[3], press_start, t_end)[1]]
-
-    chain_OS_standardized = [chain_OS[1] / abs(sol_chain_grid[1,end] / eq_chain[1] ),
-                             chain_OS[2] / abs(sol_chain_grid[2,end] / eq_chain[2] ),
-                             chain_OS[3] / abs(sol_chain_grid[3,end] / eq_chain[3] )]
-
-    omn_fixed_OS = [quadgk(t -> omn_fixed_overshoot(t)[1], press_start, t_end)[1],
-                    quadgk(t -> omn_fixed_overshoot(t)[2], press_start, t_end)[1],
-                    quadgk(t -> omn_fixed_overshoot(t)[3], press_start, t_end)[1]]
-
-    omn_fixed_OS_standardized = [omn_fixed_OS[1] / abs(sol_omn_fixed_grid[1,end] / eq_omn_fixed[1] ),
-                                 omn_fixed_OS[2] / abs(sol_omn_fixed_grid[2,end] / eq_omn_fixed[2] ),
-                                 omn_fixed_OS[3] / abs(sol_omn_fixed_grid[3,end] / eq_omn_fixed[3] )]
-
-    omn_responsive_OS = [quadgk(t -> omn_responsive_overshoot(t)[1], press_start, t_end)[1],
-                   quadgk(t -> omn_responsive_overshoot(t)[2], press_start, t_end)[1],
-                   quadgk(t -> omn_responsive_overshoot(t)[3], press_start, t_end)[1]]
-
-    omn_responsive_OS_standardized = [omn_responsive_OS[1] / abs(sol_omn_responsive_grid[1,end] / eq_omn_responsive[1] ),
-                                      omn_responsive_OS[2] / abs(sol_omn_responsive_grid[2,end] / eq_omn_responsive[2] ),
-                                      omn_responsive_OS[3] / abs(sol_omn_responsive_grid[3,end] / eq_omn_responsive[3] )]
     #Calculate max-min metric
-    resource_mm = [
-        maximum(sol_chain_press(t_press)[1,:]) - minimum(sol_chain_press(t_press)[1,:]),
-        maximum(sol_omn_fixed_press(t_press)[1,:]) - minimum(sol_omn_fixed_press(t_press)[1,:]),
-        maximum(sol_omn_responsive_press(t_press)[1,:]) - minimum(sol_omn_responsive_press(t_press)[1,:])
-    ]
-    consumer_mm = [
-        maximum(sol_chain_press(t_press)[2,:]) - minimum(sol_chain_press(t_press)[2,:]),
-        maximum(sol_omn_fixed_press(t_press)[2,:]) - minimum(sol_omn_fixed_press(t_press)[2,:]),
-        maximum(sol_omn_responsive_press(t_press)[2,:]) - minimum(sol_omn_responsive_press(t_press)[2,:])
-    ]
-    predator_mm = [
-        maximum(sol_chain_press(t_press)[3,:]) - minimum(sol_chain_press(t_press)[3,:]),
-        maximum(sol_omn_fixed_press(t_press)[3,:]) - minimum(sol_omn_fixed_press(t_press)[3,:]),
-        maximum(sol_omn_responsive_press(t_press)[3,:]) - minimum(sol_omn_responsive_press(t_press)[3,:])
-    ]
+    function min_max(animal, t_end)
+        return [maximum(sol_chain_press(range(chain_press_hit_equil[animal], t_end, length = 10000))[animal,:]) - minimum(sol_chain_press(range(chain_press_hit_equil[animal], t_end, length = 10000))[animal,:]),
+        maximum(sol_omn_fixed_press(range(fixed_press_hit_equil[animal], t_end, length = 10000))[animal,:]) - minimum(sol_omn_fixed_press(range(fixed_press_hit_equil[animal], t_end, length = 10000))[animal,:]),
+        maximum(sol_omn_responsive_press(range(responsive_press_hit_equil[animal], t_end, length = 10000))[animal,:]) - minimum(sol_omn_responsive_press(range(responsive_press_hit_equil[animal], t_end, length = 10000))[animal,:])
+            ]
+    end
+
+    resource_mm = min_max(1, t_end)
+    consumer_mm = min_max(2, t_end)
+    predator_mm = min_max(3, t_end)
 
     # Layout
     fig = figure(figsize = (8, 9))
@@ -204,7 +191,7 @@ let
     annotate("° Omn\n $deg_omn_responsive_afterpress", (270.0,0.1), xycoords = "data", fontsize = 10)
     annotate("Max ° Omn\n $max_deg_omn_responsive", (180.0,0.1), xycoords = "data", fontsize = 10)
     legend()
-    title("Omnivory [Adaptive]")
+    title("Omnivory [Responsive]")
     xlim(t_start, t_end)
     ylim(0, y_max)
 
@@ -218,28 +205,20 @@ let
     ylabel("Local Return Time")
 
     subplot(3, 2, 4)
-    # g1 = [chain_OS[1], omn_fixed_OS[1], omn_responsive_OS[1]]
-    # g2 = [chain_OS[2], omn_fixed_OS[2], omn_responsive_OS[2]]
-    # g3 = [chain_OS[3], omn_fixed_OS[3], omn_responsive_OS[3]]
-
-    g1 = [chain_OS_standardized[1], omn_fixed_OS_standardized[1], omn_responsive_OS_standardized[1]]
-    g2 = [chain_OS_standardized[2], omn_fixed_OS_standardized[2], omn_responsive_OS_standardized[2]]
-    g3 = [chain_OS_standardized[3], omn_fixed_OS_standardized[3], omn_responsive_OS_standardized[3]]
-
     #Set position of bar on X axis
     # set width of bar
     bar_width = 0.25
-    r1 = 1:length(g1)
+    r1 = 1:length(resource_OS)
     r2 = [x + bar_width for x in r1]
     r3 = [x + bar_width for x in r2]
 
     # Make the plot
-    plt.bar(r1, g1, width = bar_width, edgecolor = "white", label = "R")
-    plt.bar(r2, g2, width = bar_width, edgecolor = "white", label = "C")
-    plt.bar(r3, g3, width = bar_width, edgecolor = "white", label = "P")
+    plt.bar(r1, resource_OS, width = bar_width, edgecolor = "white", label = "R")
+    plt.bar(r2, consumer_OS, width = bar_width, edgecolor = "white", label = "C")
+    plt.bar(r3, predator_OS, width = bar_width, edgecolor = "white", label = "P")
     plt.xticks(r2, x_labels)
     plt.tick_params(axis = "x", which = "both", length=0)
-    ylabel("Standardized\nDegree of Overshoot")
+    ylabel("Degree of Overshoot")
 
     # Create legend & Show graphic
     plt.legend()
