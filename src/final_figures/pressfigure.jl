@@ -50,10 +50,6 @@ let
     par_chain = ModelPar(a_CP = 0.25, Ω = 0.0)
     par_chain_afterpress = ModelPar(K = 3.0 * press_strength, a_CP = 0.25, Ω = 0.0)
 
-    # prob_chain = ODEProblem(model!, u0, t_span, deepcopy(par_chain))
-    # sol_chain = solve(prob_chain, reltol = 1e-8, abstol = 1e-8)
-    # sol_chain_grid = sol_chain(t_grid)
-
     prob_chain_press = ODEProblem(model!, u0, t_span, deepcopy(par_chain), tstops = press_start)
     sol_chain_press = solve(prob_chain_press, reltol = 1e-8, abstol = 1e-8, callback = cb_press)
     sol_chain_press_grid = sol_chain_press(t_grid)
@@ -62,10 +58,6 @@ let
     ## Passive Omnivory
     par_omn_fixed = ModelPar(a_CP = 0.25, Ω = Ω, pref = fixed_pref)
     par_omn_fixed_afterpress = ModelPar(K = 3.0 *press_strength,a_CP = 0.25, Ω = Ω, pref = fixed_pref)
-
-    # prob_omn_fixed = ODEProblem(model!, u0, t_span, deepcopy(par_omn_fixed), tstops = press_start)
-    # sol_omn_fixed = solve(prob_omn_fixed, reltol = 1e-8, abstol = 1e-8)
-    # sol_omn_fixed_grid = sol_omn_fixed(t_grid)
 
     prob_omn_fixed_press = ODEProblem(model!, u0, t_span, deepcopy(par_omn_fixed), tstops = press_start)
     sol_omn_fixed_press = solve(prob_omn_fixed_press, reltol = 1e-8, abstol = 1e-8, callback = cb_press)
@@ -85,10 +77,6 @@ let
     par_omn_responsive = ModelPar(a_CP = 0.25, Ω = Ω, ω = ω, pref = adapt_pref)
     par_omn_responsive_afterpress = ModelPar(K = 3.0 * press_strength, a_CP = 0.25, Ω = Ω, ω = ω, pref = adapt_pref)
 
-    # prob_omn_responsive = ODEProblem(model!, u0, t_span, deepcopy(par_omn_responsive), tstops = press_start)
-    # sol_omn_responsive = solve(prob_omn_responsive, reltol = 1e-8, abstol = 1e-8)
-    # sol_omn_responsive_grid = sol_omn_responsive(t_grid) #CAN DELETE?
-
     prob_omn_responsive_press = ODEProblem(model!, u0, t_span, deepcopy(par_omn_responsive), tstops = press_start)
     sol_omn_responsive_press = solve(prob_omn_responsive_press, reltol = 1e-8, abstol = 1e-8, callback = cb_press)
     sol_omn_responsive_press_grid = sol_omn_responsive_press(t_grid)
@@ -100,25 +88,25 @@ let
 
     # Eigenvalue analysis
     ## Chain
-    eq_chain = find_eq(sol_chain_press[end], par_chain_afterpress)
-    chain_λ1 = λ1_stability(cmat(eq_chain, par_chain_afterpress))
+    eq_chain_afterpress = find_eq(sol_chain_press[end], par_chain_afterpress)
+    chain_λ1 = λ1_stability(cmat(eq_chain_afterpress, par_chain_afterpress))
     # chain_react = ν_stability(cmat(eq_chain, par_chain_afterpress)) CAN DELETE?
 
     ## Passive Omnivory
-    eq_omn_fixed = find_eq(sol_omn_fixed_press[end], par_omn_fixed_afterpress)
-    omn_fixed_λ1 = λ1_stability(cmat(eq_omn_fixed, par_omn_fixed_afterpress))
+    eq_omn_fixed_afterpress = find_eq(sol_omn_fixed_press[end], par_omn_fixed_afterpress)
+    omn_fixed_λ1 = λ1_stability(cmat(eq_omn_fixed_afterpress, par_omn_fixed_afterpress))
     # omn_fixed_react = ν_stability(cmat(eq_omn_fixed, par_omn_fixed_afterpress)) CAN DELETE?
 
     ## Responsive Omnivory
-    eq_omn_responsive = find_eq(sol_omn_responsive_press[end], par_omn_responsive_afterpress)
-    omn_responsive_λ1 = λ1_stability(cmat(eq_omn_responsive, par_omn_responsive_afterpress))
+    eq_omn_responsive_afterpress = find_eq(sol_omn_responsive_press[end], par_omn_responsive_afterpress)
+    omn_responsive_λ1 = λ1_stability(cmat(eq_omn_responsive_afterpress, par_omn_responsive_afterpress))
     # omn_responsive_react = ν_stability(cmat(eq_omn_responsive, par_omn_responsive_afterpress)) CAN DELETE?
 
     # Measure of Overshoot
     ## What we are asking here is what is the total time * maginitute that the state variables are above or below the equilibrium after a perturbation
-    chain_overshoot(t) = abs.(sol_chain_press(t) .- eq_chain)
-    omn_fixed_overshoot(t) = abs.(sol_omn_fixed_press(t) .- eq_omn_fixed)
-    omn_responsive_overshoot(t) = abs.(sol_omn_responsive_press(t) .- eq_omn_responsive)
+    chain_overshoot(t) = abs.(sol_chain_press(t) .- eq_chain_afterpress)
+    omn_fixed_overshoot(t) = abs.(sol_omn_fixed_press(t) .- eq_omn_fixed_afterpress)
+    omn_responsive_overshoot(t) = abs.(sol_omn_responsive_press(t) .- eq_omn_responsive_afterpress)
 
     function overshoot(animal, t_end)
         return [quadgk(t -> chain_overshoot(t)[animal], chain_press_hit_equil[animal], t_end)[1],
