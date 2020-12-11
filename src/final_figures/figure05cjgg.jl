@@ -103,18 +103,6 @@ let
     omn_fixed_overshoot(t) = abs.(sol_omn_fixed_pulse(t) .- eq_omn_fixed)
     omn_responsive_overshoot(t) = abs.(sol_omn_responsive_pulse(t) .- eq_omn_responsive)
 
-    # let
-    #     t_check = range(pulse_start, t_end, length = 1000)
-    #     figure()
-    #     subplot(3, 1, 1)
-    #     plot(t_check, chain_overshoot.(t_check))
-    #     subplot(3, 1, 2)
-    #     plot(t_check, omn_fixed_overshoot.(t_check))
-    #     subplot(3, 1, 3)
-    #     plot(t_check, omn_pulse_overshoot.(t_check))
-    # end
-
-
     #NOTE: I am not yet dealing with looking for the peak of the Resource to start integration -- this is the naive approach of just using the start of the pulseing event
     chain_OS = [quadgk(t -> chain_overshoot(t)[1], pulse_start, t_end)[1],
                 quadgk(t -> chain_overshoot(t)[2], pulse_start, t_end)[1],
@@ -183,6 +171,7 @@ let
     x_labels = ["Food\nChain", "Passive", "Responsive"]
     plt.bar(x_loc, 1 ./ abs.([chain_λ1, omn_fixed_λ1, omn_responsive_λ1]))
     plt.xticks(x_loc, x_labels)
+    plt.tick_params(axis = "x", which = "both", length=0)
     ylabel("Local Return Time")
 
     subplot(3, 2, 4)
