@@ -3,6 +3,7 @@ using DifferentialEquations
 using NLsolve
 using QuadGK
 using PyPlot
+pygui(true)
 
 # # Single Pulse Event
 # Objectives are that we can see a response of omnivory in the face of this
@@ -122,9 +123,9 @@ let
 
     #Calculate max-min metric
     function min_max(animal, t_end)
-        return [maximum(sol_chain_pulse(range(res_max_times[animal], t_end, length = 10000))[animal,:]) - minimum(sol_chain_pulse(range(res_max_times[animal], t_end, length = 10000))[animal,:]),
-        maximum(sol_omn_fixed_pulse(range(res_max_times[animal], t_end, length = 10000))[animal,:]) - minimum(sol_omn_fixed_pulse(range(res_max_times[animal], t_end, length = 10000))[animal,:]),
-        maximum(sol_omn_responsive_pulse(range(res_max_times[animal], t_end, length = 10000))[animal,:]) - minimum(sol_omn_responsive_pulse(range(res_max_times[animal], t_end, length = 10000))[animal,:])
+        return [maximum(sol_chain_pulse(range(res_max_times[animal], t_end, length = 10000))[animal, :]) - minimum(sol_chain_pulse(range(res_max_times[animal], t_end, length = 10000))[animal, :]),
+        maximum(sol_omn_fixed_pulse(range(res_max_times[animal], t_end, length = 10000))[animal, :]) - minimum(sol_omn_fixed_pulse(range(res_max_times[animal], t_end, length = 10000))[animal, :]),
+        maximum(sol_omn_responsive_pulse(range(res_max_times[animal], t_end, length = 10000))[animal, :]) - minimum(sol_omn_responsive_pulse(range(res_max_times[animal], t_end, length = 10000))[animal, :])
             ]
     end
 
@@ -202,7 +203,7 @@ let
     x_labels = ["Food\nChain", "Passive", "Responsive"]
     plt.bar(x_loc, 1 ./ abs.([chain_λ1, omn_fixed_λ1, omn_responsive_λ1]))
     plt.xticks(x_loc, x_labels)
-    plt.tick_params(axis = "x", which = "both", length=0)
+    plt.tick_params(axis = "x", which = "both", length = 0)
     ylabel("Local Return Time")
 
     subplot(3, 2, 4)

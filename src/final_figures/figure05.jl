@@ -3,6 +3,7 @@ using DifferentialEquations
 using NLsolve
 using QuadGK
 using PyPlot
+pygui(true)
 
 # # Resource Pulse/Masting Events
 # I want to try to model the situation where we have a relatively low
@@ -105,7 +106,7 @@ let
     ## What we are asking here is what is the total time * maginitute that the state variables are above or below the equilibrium after a perturbation
     chain_overshoot(t) = abs.(sol_chain_mast(t) .- eq_chain)
     omn_fixed_overshoot(t) = abs.(sol_omn_fixed_mast(t) .- eq_omn_fixed)
-    omn_overshoot(t) = abs.(sol_omn_mast(t) .- eq_omn_mast)
+    omn_overshoot(t) = abs.(sol_omn(t) .- eq_omn)
 
     # let
     #     t_check = range(first_mast, first_mast + mast_freq, length = 1000)
@@ -129,8 +130,8 @@ let
                     quadgk(t -> omn_fixed_overshoot(t)[3], first_mast, first_mast + mast_freq)[1]]
     
     omn_OS = [quadgk(t -> omn_overshoot(t)[1], first_mast, first_mast + mast_freq)[1],
-                   quadgk(t -> omn_overshoot(t)[2], first_mast, first_mast + mast_freq)[1],
-                   quadgk(t -> omn_overshoot(t)[3], first_mast, first_mast + mast_freq)[1]]
+              quadgk(t -> omn_overshoot(t)[2], first_mast, first_mast + mast_freq)[1],
+              quadgk(t -> omn_overshoot(t)[3], first_mast, first_mast + mast_freq)[1]]
     
     
     # Layout
