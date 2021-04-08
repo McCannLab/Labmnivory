@@ -38,6 +38,8 @@ function find_time_hit_res_max(data)
     return data.t[max_res[2]]
 end
 
+
+
 let
     u0 = [1.0, 1.5, 1.5]
     t_end = 200
@@ -170,6 +172,7 @@ let
     title("Food Chain")
     xlim(t_start, t_end)
     ylim(0, y_max)
+    ylabel("Density")
 
     ### Omnivory [Fixed]
     subplot(3, 2, 3)
@@ -180,9 +183,10 @@ let
     plot(sol_omn_fixed_pulse_grid.t, sol_omn_fixed_pulse_grid[2, :], color = C_col, label = "C")
     plot(sol_omn_fixed_pulse_grid.t, sol_omn_fixed_pulse_grid[3, :], color = P_col, label = "P")
     legend()
-    title("Omnivory [Passive]")
+    title("Passive Omnivory")
     xlim(t_start, t_end)
     ylim(0, y_max)
+    ylabel("Density")
 
     ### Omnivory [responsive]
     subplot(3, 2, 5)
@@ -193,14 +197,16 @@ let
     plot(sol_omn_responsive_pulse_grid.t, sol_omn_responsive_pulse_grid[2, :], color = C_col, label = "C")
     plot(sol_omn_responsive_pulse_grid.t, sol_omn_responsive_pulse_grid[3, :], color = P_col, label = "P")
     legend()
-    title("Omnivory [Responsive]")
+    title("Responsive Omnivory")
     xlim(t_start, t_end)
     ylim(0, y_max)
+    ylabel("Density")
+    xlabel("Time")
 
     ## Second Column: Dynamic Stability / Overshoot Metrics
     subplot(3, 2, 2)
     x_loc = [0, 1, 2]
-    x_labels = ["Food\nChain", "Passive", "Responsive"]
+    x_labels = ["FC", "P", "R"]
     plt.bar(x_loc, 1 ./ abs.([chain_λ1, omn_fixed_λ1, omn_responsive_λ1]))
     plt.xticks(x_loc, x_labels)
     plt.tick_params(axis = "x", which = "both", length = 0)
@@ -239,5 +245,6 @@ let
     plt.legend()
 
     tight_layout()
+    savefig("figs/fig3a.svg")
     return fig
 end

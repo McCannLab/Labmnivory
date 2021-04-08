@@ -136,7 +136,7 @@ let
     C_col = "#ff7f0e"
     P_col = "#2ca02c"
     ## Time series axis limits
-    y_max = 4
+    y_max = 5
 
     ## First Column: Visualizations of Time Series
     ### Food Chain
@@ -151,6 +151,7 @@ let
     title("Food Chain")
     xlim(t_start, t_end)
     ylim(0, y_max)
+    ylabel("Density")
 
     ### Omnivory [Fixed]
     subplot(3, 2, 3)
@@ -160,13 +161,14 @@ let
     plot(sol_omn_fixed_press_grid.t, sol_omn_fixed_press_grid[1, :], color = R_col, label = "R")
     plot(sol_omn_fixed_press_grid.t, sol_omn_fixed_press_grid[2, :], color = C_col, label = "C")
     plot(sol_omn_fixed_press_grid.t, sol_omn_fixed_press_grid[3, :], color = P_col, label = "P")
-    annotate("° Omn\n $deg_omn_fixed_beforepress", (75.0,3.5), xycoords = "data", fontsize = 10)
-    annotate("° Omn\n $deg_omn_fixed_afterpress", (270.0,3.5), xycoords = "data", fontsize = 10)
-    annotate("Max ° Omn\n $max_deg_omn_fixed", (180.0,3.5), xycoords = "data", fontsize = 10)
+    # annotate("° Omn\n $deg_omn_fixed_beforepress", (75.0,3.5), xycoords = "data", fontsize = 10)
+    # annotate("° Omn\n $deg_omn_fixed_afterpress", (270.0,3.5), xycoords = "data", fontsize = 10)
+    # annotate("Max ° Omn\n $max_deg_omn_fixed", (180.0,3.5), xycoords = "data", fontsize = 10)
     legend()
-    title("Omnivory [Passive]")
+    title("Passive Omnivory")
     xlim(t_start, t_end)
     ylim(0, y_max)
+    ylabel("Density")
 
     ### Omnivory [Adaptive]
     subplot(3, 2, 5)
@@ -176,21 +178,23 @@ let
     plot(sol_omn_responsive_press_grid.t, sol_omn_responsive_press_grid[1, :], color = R_col, label = "R")
     plot(sol_omn_responsive_press_grid.t, sol_omn_responsive_press_grid[2, :], color = C_col, label = "C")
     plot(sol_omn_responsive_press_grid.t, sol_omn_responsive_press_grid[3, :], color = P_col, label = "P")
-    annotate("° Omn\n $deg_omn_responsive_beforepress", (75.0,0.1), xycoords = "data", fontsize = 10)
-    annotate("° Omn\n $deg_omn_responsive_afterpress", (270.0,0.1), xycoords = "data", fontsize = 10)
-    annotate("Max ° Omn\n $max_deg_omn_responsive", (180.0,0.1), xycoords = "data", fontsize = 10)
+    # annotate("° Omn\n $deg_omn_responsive_beforepress", (75.0,0.1), xycoords = "data", fontsize = 10)
+    # annotate("° Omn\n $deg_omn_responsive_afterpress", (270.0,0.1), xycoords = "data", fontsize = 10)
+    # annotate("Max ° Omn\n $max_deg_omn_responsive", (180.0,0.1), xycoords = "data", fontsize = 10)
     legend()
-    title("Omnivory [Responsive]")
+    title("Responsive Omnivory")
     xlim(t_start, t_end)
     ylim(0, y_max)
+    ylabel("Density")
+    xlabel("Time")
 
     ## Second Column: Dynamic Stability / Overshoot Metrics
     subplot(3, 2, 2)
     x_loc = [0, 1, 2]
-    x_labels = ["Food\nChain", "Passive", "Responsive"]
+    x_labels = ["FC", "P", "R"]
     plt.bar(x_loc, 1 ./ abs.([chain_λ1, omn_fixed_λ1, omn_responsive_λ1]))
     plt.xticks(x_loc, x_labels)
-    plt.tick_params(axis = "x", which = "both", length=0)
+    plt.tick_params(axis = "x", which = "both", length = 0)
     ylabel("Local Return Time")
 
     subplot(3, 2, 4)
@@ -206,7 +210,7 @@ let
     plt.bar(r2, consumer_OS, width = bar_width, edgecolor = "white", label = "C")
     plt.bar(r3, predator_OS, width = bar_width, edgecolor = "white", label = "P")
     plt.xticks(r2, x_labels)
-    plt.tick_params(axis = "x", which = "both", length=0)
+    plt.tick_params(axis = "x", which = "both", length = 0)
     ylabel("Degree of Overshoot")
 
     # Create legend & Show graphic
@@ -218,11 +222,13 @@ let
     plt.bar(r2, consumer_mm, width = bar_width, edgecolor = "white", label = "C")
     plt.bar(r3, predator_mm, width = bar_width, edgecolor = "white", label = "P")
     plt.xticks(r2, x_labels)
-    plt.tick_params(axis = "x", which = "both", length=0)
+    plt.tick_params(axis = "x", which = "both", length = 0)
     ylabel("Max - Min")
 
     plt.legend()
 
     tight_layout()
+    savefig("figs/fig3b.svg")
     return fig
+
 end
