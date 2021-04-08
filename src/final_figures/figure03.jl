@@ -244,4 +244,7 @@ let
             
     tight_layout()
     return fig
+    
 end
+
+savefig("figs/fig3.svg")

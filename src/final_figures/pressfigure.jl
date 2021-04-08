@@ -141,9 +141,9 @@ let
     ## First Column: Visualizations of Time Series
     ### Food Chain
     subplot(3, 2, 1)
-    hlines(eq_chain[1], 100, 300, color = R_col, alpha = 0.5)
-    hlines(eq_chain[2], 100, 300, color = C_col, alpha = 0.5)
-    hlines(eq_chain[3], 100, 300, color = P_col, alpha = 0.5)
+    hlines(eq_chain_afterpress[1], 100, 300, color = R_col, alpha = 0.5)
+    hlines(eq_chain_afterpress[2], 100, 300, color = C_col, alpha = 0.5)
+    hlines(eq_chain_afterpress[3], 100, 300, color = P_col, alpha = 0.5)
     plot(sol_chain_press_grid.t, sol_chain_press_grid[1, :], color = R_col, label = "R")
     plot(sol_chain_press_grid.t, sol_chain_press_grid[2, :], color = C_col, label = "C")
     plot(sol_chain_press_grid.t, sol_chain_press_grid[3, :], color = P_col, label = "P")
@@ -154,9 +154,9 @@ let
 
     ### Omnivory [Fixed]
     subplot(3, 2, 3)
-    hlines(eq_omn_fixed[1], 100, 300, color = R_col, alpha = 0.5)
-    hlines(eq_omn_fixed[2], 100, 300, color = C_col, alpha = 0.5)
-    hlines(eq_omn_fixed[3], 100, 300, color = P_col, alpha = 0.5)
+    hlines(eq_omn_fixed_afterpress[1], 100, 300, color = R_col, alpha = 0.5)
+    hlines(eq_omn_fixed_afterpress[2], 100, 300, color = C_col, alpha = 0.5)
+    hlines(eq_omn_fixed_afterpress[3], 100, 300, color = P_col, alpha = 0.5)
     plot(sol_omn_fixed_press_grid.t, sol_omn_fixed_press_grid[1, :], color = R_col, label = "R")
     plot(sol_omn_fixed_press_grid.t, sol_omn_fixed_press_grid[2, :], color = C_col, label = "C")
     plot(sol_omn_fixed_press_grid.t, sol_omn_fixed_press_grid[3, :], color = P_col, label = "P")
@@ -170,9 +170,9 @@ let
 
     ### Omnivory [Adaptive]
     subplot(3, 2, 5)
-    hlines(eq_omn_responsive[1], 100, 300, color = R_col, alpha = 0.5)
-    hlines(eq_omn_responsive[2], 100, 300, color = C_col, alpha = 0.5)
-    hlines(eq_omn_responsive[3], 100, 300, color = P_col, alpha = 0.5)
+    hlines(eq_omn_responsive_afterpress[1], 100, 300, color = R_col, alpha = 0.5)
+    hlines(eq_omn_responsive_afterpress[2], 100, 300, color = C_col, alpha = 0.5)
+    hlines(eq_omn_responsive_afterpress[3], 100, 300, color = P_col, alpha = 0.5)
     plot(sol_omn_responsive_press_grid.t, sol_omn_responsive_press_grid[1, :], color = R_col, label = "R")
     plot(sol_omn_responsive_press_grid.t, sol_omn_responsive_press_grid[2, :], color = C_col, label = "C")
     plot(sol_omn_responsive_press_grid.t, sol_omn_responsive_press_grid[3, :], color = P_col, label = "P")
