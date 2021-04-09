@@ -12,7 +12,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        julia-version: ['v1.5.4']
+        julia-version: ['v1.6.0']
         os: [macOS-latest, windows-latest, ubuntu-latest]
       max-parallel: 1
 

@@ -1,4 +1,5 @@
 # Labmnivory
+[![Reproduce the analysis](https://github.com/McCannLab/Labmnivory/actions/workflows/reproduce.yaml/badge.svg)](https://github.com/McCannLab/Labmnivory/actions/workflows/reproduce.yaml)
 
 ## Installation
 
@@ -18,18 +19,37 @@ First install a recent version of [Julia](https://julialang.org/) and the follow
 which can be done with the following command line
 
 ```julia
-] add  DifferentialEquations LinearAlgebra Parameters ForwardDiff PyPlot
+julia src/install_packages.jl
 ```
 
-
 Then clone the repository
-
 
 ```
 git clone https://github.com/McCannLab/Labmnivory.git
 ```
 
 You should be good to go!
+
+
+## File structure 
+
+- `src`: source code 
+
+
+
+
+## How to reproduce the analysis 
+
+Once the repo is clones (or downloaded), run the Julia code in `fig_03.jl` and `fig_04.jl` in `src/`. One way to do it is.
+
+```julia
+cd src
+julia fig_03.jl
+julia fig_04.jl
+```
+
+
+
 
 ## Style guide
 

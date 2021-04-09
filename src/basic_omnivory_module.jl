@@ -90,6 +90,9 @@ cmat(u, p) = ForwardDiff.jacobian(x -> rhs(x, p), u)
 """M is the community matrix, we can be calculated with `cmat(u, p)`"""
 λ1_stability(M) = maximum(real.(eigvals(M)))
 
+"""M is the community matrix, we can be calculated with `cmat(u, p)`"""
+λ1_stability_imag(M) = imag.(eigvals(M))[sortperm(real.(eigvals(M)))[1]]
+
 """M is the community matrix, we can be calculated with `cmat(u, p)`
 Note: `\nu` is the what to input `ν` which looks a bit to much like `v` for my taste
 """
