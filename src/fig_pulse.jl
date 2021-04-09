@@ -245,6 +245,6 @@ let
     plt.legend()
 
     tight_layout()
-    savefig("figs/fig3a.svg")
+    savefig("figs/fig3A.svg")
     return fig
 end
