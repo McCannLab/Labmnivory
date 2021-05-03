@@ -1,11 +1,8 @@
 include("basic_omnivory_module.jl")
-using DifferentialEquations
-using NLsolve
-using QuadGK
-using PyPlot
+using DifferentialEquations, NLsolve, QuadGK, PyPlot
 pygui(true)
 
-# # Single Pulse Event
+# SINGLE PULSE EVENT
 # Objectives are that we can see a response of omnivory in the face of this
 # variable productivity situation, and test that we are measuring omnivory
 # in a way that is enlightening.
@@ -14,7 +11,7 @@ pygui(true)
 #TODO Clean and make metrics start calculating after resource peak
 
 global pulse_length = 2.0
-global pulse_start = 100
+global pulse_start = 200
 global pulse_end = pulse_start + pulse_length
 global pulse_event_times = union(pulse_start, pulse_end)
 pulse_strength = 2.0
@@ -32,7 +29,6 @@ end
 
 cb = DiscreteCallback(pulse_event, forcing!)
 
-
 function find_time_hit_res_max(data)
     max_res = findmax(data[1,:])
     return data.t[max_res[2]]
@@ -41,65 +37,51 @@ end
 
 
 let
+    # initial values + time setup
     u0 = [1.0, 1.5, 1.5]
-    t_end = 200
+    t_end = 350
     t_span = (0.0, t_end)
-    t_start = 75.0
+    t_start = 175.0
     t_grid = range(t_start, t_end, length = 10000)
-
     # The global basic level of "Omnivory" we are looking at:
     Ω = 0.1
 
-    # Chain
-    par_chain = ModelPar(a_CP = 0.25, Ω = 0.0)
-
-    # prob_chain = ODEProblem(model!, u0, t_span, deepcopy(par_chain))
-    # sol_chain = solve(prob_chain, reltol = 1e-8, abstol = 1e-8)
-    # sol_chain_grid = sol_chain(t_grid)
-
+    # ODE
+    ## FOOD CHAIN
+    par_chain = ModelPar(Ω = 0.0)
     prob_chain_pulse = ODEProblem(model!, u0, t_span, deepcopy(par_chain), tstops = pulse_event_times)
     sol_chain_pulse = solve(prob_chain_pulse, reltol = 1e-8, abstol = 1e-8, callback = cb)
     sol_chain_pulse_grid = sol_chain_pulse(t_grid)
 
-    ## Passive Omnivory
-    par_omn_fixed = ModelPar(a_CP = 0.25, Ω = Ω, pref = fixed_pref)
-
-    # prob_omn_fixed = ODEProblem(model!, u0, t_span, deepcopy(par_omn_fixed), tstops = pulse_event_times)
-    # sol_omn_fixed = solve(prob_omn_fixed, reltol = 1e-8, abstol = 1e-8)
-    # sol_omn_fixed_grid = sol_omn_fixed(t_grid)
-
+    ## PASSIVE OMNIVORY
+    par_omn_fixed = ModelPar(Ω = Ω, pref = fixed_pref)
     prob_omn_fixed_pulse = ODEProblem(model!, u0, t_span, deepcopy(par_omn_fixed), tstops = pulse_event_times)
     sol_omn_fixed_pulse = solve(prob_omn_fixed_pulse, reltol = 1e-8, abstol = 1e-8, callback = cb)
     sol_omn_fixed_pulse_grid = sol_omn_fixed_pulse(t_grid)
 
-    # Responsive Omnivory
-    ## Solve for ω so that at equlibrium Ω_fixed = Ω_adapt
+    ## RESPONSIVE OMNIVORY
+    ### Solve for ω so that at equlibrium Ω_fixed = Ω_adapt
     eq = nlsolve((du, u) -> model!(du, u, par_omn_fixed, 0.0), sol_omn_fixed_pulse_grid[1]).zero
-
-    ## Solving for ω we have `ω = Ω * C^* / (Ω * C^* + (1 - Ω) * R^*)`
+    ### Solving for ω we have `ω = Ω * C^* / (Ω * C^* + (1 - Ω) * R^*)`
     ω = Ω * eq[2] / (Ω * eq[2] + (1 - Ω) * eq[1])
-    par_omn_responsive = ModelPar(a_CP = 0.25, Ω = Ω, ω = ω, pref = adapt_pref)
-
-    # prob_omn_responsive = ODEProblem(model!, u0, t_span, deepcopy(par_omn_responsive), tstops = pulse_event_times)
-    # sol_omn_responsive = solve(prob_omn_responsive, reltol = 1e-8, abstol = 1e-8)
-    # sol_omn_responsive_grid = sol_omn_responsive(t_grid)
-
+    par_omn_responsive = ModelPar(Ω = Ω, ω = ω, pref = adapt_pref)
     prob_omn_responsive_pulse = ODEProblem(model!, u0, t_span, deepcopy(par_omn_responsive), tstops = pulse_event_times)
     sol_omn_responsive_pulse = solve(prob_omn_responsive_pulse, reltol = 1e-8, abstol = 1e-8, callback = cb)
     sol_omn_responsive_pulse_grid = sol_omn_responsive_pulse(t_grid)
 
-    # Eigenvalue analysis
-    ## Chain
+
+    # EIGENVALUE ANALYSIS
+    ## FOOD CHAIN
     eq_chain = find_eq(sol_chain_pulse_grid[1], par_chain)
     chain_λ1 = λ1_stability(cmat(eq_chain, par_chain))
     # chain_react = ν_stability(cmat(eq_chain, par_chain)) CAN DELETE?
 
-    ## Passive Omnivory
+    ## PASSIVE OMNIVORY
     eq_omn_fixed = find_eq(sol_omn_fixed_pulse_grid[1], par_omn_fixed)
     omn_fixed_λ1 = λ1_stability(cmat(eq_omn_fixed, par_omn_fixed))
     # omn_fixed_react = ν_stability(cmat(eq_omn_fixed, par_omn_fixed)) CAN DELETE?
 
-    ## Responsive Omnivory
+    ## RESPONSIVE OMNIVORY
     eq_omn_responsive = find_eq(sol_omn_responsive_pulse_grid[1], par_omn_responsive)
     omn_responsive_λ1 = λ1_stability(cmat(eq_omn_responsive, par_omn_responsive))
     # omn_responsive_react = ν_stability(cmat(eq_omn_responsive, par_omn_responsive)) CAN DELETE?
@@ -158,13 +140,56 @@ let
     P_col = "#2ca02c"
     ## Time series axis limits
     y_max = 5
+    
+    
+    # MAX DEGREE OF OMNIVORY PER PHASE 
+    ## Fixed omnivory
+    ### OmEq
+    sol = sol_omn_fixed_pulse(180:0.01:199)
+    println(
+        "Fixed - Equilibrium: ", 
+        maximum([degree_omnivory(sol[:,i], par_omn_fixed) for i in 1:size(sol)[2]])
+    )
+    ### Pulse
+    sol = sol_omn_fixed_pulse(200:0.01:205)
+    println(
+        "Fixed - Pulse: ", 
+        maximum([degree_omnivory(sol[:,i], par_omn_fixed) for i in 1:size(sol)[2]])
+    )
+    ### OmT
+    sol = sol_omn_fixed_pulse(205:0.01:325)
+    println(
+        "Fixed - Transtion: ", 
+        maximum([degree_omnivory(sol[:,i], par_omn_fixed) for i in 1:size(sol)[2]])
+    )
+
+    ## Responsive omnivory
+    ### Equilibrium
+    sol = sol_omn_responsive_pulse(180:0.01:199)
+    println(
+        "Responsive - Equilibrium: ", 
+        maximum([degree_omnivory(sol[:,i], par_omn_responsive) for i in 1:size(sol)[2]])
+    )
+    ### OmB 
+    sol = sol_omn_responsive_pulse(200:0.01:205)
+    println(
+        "Responsive - Pulse: ", 
+        maximum([degree_omnivory(sol[:,i], par_omn_responsive) for i in 1:size(sol)[2]])
+    )
+    ### OmT
+    sol = sol_omn_responsive_pulse(205:0.01:310)
+    println(
+        "Responsive - Transition: ", 
+        maximum([degree_omnivory(sol[:,i], par_omn_responsive) for i in 1:size(sol)[2]])
+    )
+
 
     ## First Column: Visualizations of Time Series
     ### Food Chain
     subplot(3, 2, 1)
-    hlines(eq_chain[1], 100, 200, color = R_col, alpha = 0.5)
-    hlines(eq_chain[2], 100, 200, color = C_col, alpha = 0.5)
-    hlines(eq_chain[3], 100, 200, color = P_col, alpha = 0.5)
+    hlines(eq_chain[1], t_start, t_end, color = R_col, alpha = 0.5)
+    hlines(eq_chain[2], t_start, t_end, color = C_col, alpha = 0.5)
+    hlines(eq_chain[3], t_start, t_end, color = P_col, alpha = 0.5)
     plot(sol_chain_pulse_grid.t, sol_chain_pulse_grid[1, :], color = R_col, label = "R")
     plot(sol_chain_pulse_grid.t, sol_chain_pulse_grid[2, :], color = C_col, label = "C")
     plot(sol_chain_pulse_grid.t, sol_chain_pulse_grid[3, :], color = P_col, label = "P")
@@ -176,9 +201,9 @@ let
 
     ### Omnivory [Fixed]
     subplot(3, 2, 3)
-    hlines(eq_omn_fixed[1], 100, 200, color = R_col, alpha = 0.5)
-    hlines(eq_omn_fixed[2], 100, 200, color = C_col, alpha = 0.5)
-    hlines(eq_omn_fixed[3], 100, 200, color = P_col, alpha = 0.5)
+    hlines(eq_omn_fixed[1], t_start, t_end, color = R_col, alpha = 0.5)
+    hlines(eq_omn_fixed[2], t_start, t_end, color = C_col, alpha = 0.5)
+    hlines(eq_omn_fixed[3], t_start, t_end, color = P_col, alpha = 0.5)
     plot(sol_omn_fixed_pulse_grid.t, sol_omn_fixed_pulse_grid[1, :], color = R_col, label = "R")
     plot(sol_omn_fixed_pulse_grid.t, sol_omn_fixed_pulse_grid[2, :], color = C_col, label = "C")
     plot(sol_omn_fixed_pulse_grid.t, sol_omn_fixed_pulse_grid[3, :], color = P_col, label = "P")
@@ -190,9 +215,9 @@ let
 
     ### Omnivory [responsive]
     subplot(3, 2, 5)
-    hlines(eq_omn_responsive[1], 100, 200, color = R_col, alpha = 0.5)
-    hlines(eq_omn_responsive[2], 100, 200, color = C_col, alpha = 0.5)
-    hlines(eq_omn_responsive[3], 100, 200, color = P_col, alpha = 0.5)
+    hlines(eq_omn_responsive[1], t_start, t_end, color = R_col, alpha = 0.5)
+    hlines(eq_omn_responsive[2], t_start, t_end, color = C_col, alpha = 0.5)
+    hlines(eq_omn_responsive[3], t_start, t_end, color = P_col, alpha = 0.5)
     plot(sol_omn_responsive_pulse_grid.t, sol_omn_responsive_pulse_grid[1, :], color = R_col, label = "R")
     plot(sol_omn_responsive_pulse_grid.t, sol_omn_responsive_pulse_grid[2, :], color = C_col, label = "C")
     plot(sol_omn_responsive_pulse_grid.t, sol_omn_responsive_pulse_grid[3, :], color = P_col, label = "P")
@@ -226,7 +251,7 @@ let
     plt.bar(r3, predator_OS, width = bar_width, edgecolor = "white", label = "P")
     plt.xticks(r2, x_labels)
     plt.tick_params(axis = "x", which = "both", length=0)
-
+    # ylim(0, 11)
     ylabel("Degree of Overshoot")
 
     # Create legend & Show graphic

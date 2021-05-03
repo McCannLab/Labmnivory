@@ -1,11 +1,8 @@
 include("basic_omnivory_module.jl")
-using DifferentialEquations
-using NLsolve
-using QuadGK
-using PyPlot
+using DifferentialEquations, NLsolve, QuadGK, PyPlot
 
-# # Press
-press_start = 100.0
+# Press
+press_start = 300.0
 press_strength = 1.3
 
 press_event(u, t, integrator) = t ∈ press_start
@@ -21,7 +18,7 @@ cb_press = DiscreteCallback(press_event, forcing_press!)
 
 
 function find_times_hit_equil(data)
-    eq = data[1,end], data[2,end], data[3,end]
+    eq = data[1, end], data[2, end], data[3, end]
     times = zeros(3)
     for animal in 1:3
         for i in 20:length(data)
@@ -36,28 +33,32 @@ end
 
 
 let
+    
     u0 = [1.0, 1.5, 1.5]
-    t_end = 300
+    t_end = 900
     t_span = (0.0, t_end)
-    t_start = 75.0
+    # start at 220; pulse at t=300 this is just for clarity on figure (at t=200
+    # equilibrium is reached)
+    t_start = 220.0
     t_grid = range(t_start, t_end, length = 10000)
     t_press = range(press_start, t_end, length = 10000)
 
     # The global basic level of "Omnivory" we are looking at:
     Ω = 0.1
 
-    # Chain
-    par_chain = ModelPar(a_CP = 0.25, Ω = 0.0)
-    par_chain_afterpress = ModelPar(K = 3.0 * press_strength, a_CP = 0.25, Ω = 0.0)
+    # ODE 
+    ## FOOD CHAIN
+    par_chain = ModelPar(a_CP = aCP_slc, Ω = 0.0)
+    par_chain_afterpress = ModelPar(K = 3.0 * press_strength, Ω = 0.0)
 
     prob_chain_press = ODEProblem(model!, u0, t_span, deepcopy(par_chain), tstops = press_start)
     sol_chain_press = solve(prob_chain_press, reltol = 1e-8, abstol = 1e-8, callback = cb_press)
     sol_chain_press_grid = sol_chain_press(t_grid)
     chain_press_hit_equil = find_times_hit_equil(sol_chain_press(t_press))
 
-    ## Passive Omnivory
-    par_omn_fixed = ModelPar(a_CP = 0.25, Ω = Ω, pref = fixed_pref)
-    par_omn_fixed_afterpress = ModelPar(K = 3.0 *press_strength,a_CP = 0.25, Ω = Ω, pref = fixed_pref)
+    ## PASSIVE OMNIVORY
+    par_omn_fixed = ModelPar(a_CP = aCP_slc, Ω = Ω, pref = fixed_pref)
+    par_omn_fixed_afterpress = ModelPar(K = 3.0 * press_strength, Ω = Ω, pref = fixed_pref)
 
     prob_omn_fixed_press = ODEProblem(model!, u0, t_span, deepcopy(par_omn_fixed), tstops = press_start)
     sol_omn_fixed_press = solve(prob_omn_fixed_press, reltol = 1e-8, abstol = 1e-8, callback = cb_press)
@@ -68,14 +69,15 @@ let
     deg_omn_fixed_afterpress = round(degree_omnivory(sol_omn_fixed_press_grid.u[end], par_omn_fixed_afterpress), digits = 2)
     max_deg_omn_fixed = round(maximum([degree_omnivory(u, par_omn_fixed) for u in sol_omn_fixed_press_grid]), digits = 2)
 
-    # Responsive Omnivory
+
+    ## RESPONSIVE OMNIVORY
     ## Solve for ω so that at equlibrium Ω_fixed = Ω_adapt
     eq = nlsolve((du, u) -> model!(du, u, par_omn_fixed, 0.0), sol_omn_fixed_press_grid[1]).zero
 
     ## Solving for ω we have `ω = Ω * C^* / (Ω * C^* + (1 - Ω) * R^*)`
     ω = Ω * eq[2] / (Ω * eq[2] + (1 - Ω) * eq[1])
-    par_omn_responsive = ModelPar(a_CP = 0.25, Ω = Ω, ω = ω, pref = adapt_pref)
-    par_omn_responsive_afterpress = ModelPar(K = 3.0 * press_strength, a_CP = 0.25, Ω = Ω, ω = ω, pref = adapt_pref)
+    par_omn_responsive = ModelPar(Ω = Ω, ω = ω, pref = adapt_pref)
+    par_omn_responsive_afterpress = ModelPar(K = 3.0 * press_strength, Ω = Ω, ω = ω, pref = adapt_pref)
 
     prob_omn_responsive_press = ODEProblem(model!, u0, t_span, deepcopy(par_omn_responsive), tstops = press_start)
     sol_omn_responsive_press = solve(prob_omn_responsive_press, reltol = 1e-8, abstol = 1e-8, callback = cb_press)
@@ -86,18 +88,20 @@ let
     deg_omn_responsive_afterpress = round(degree_omnivory(sol_omn_responsive_press_grid.u[end], par_omn_responsive_afterpress), digits = 2)
     max_deg_omn_responsive = round(maximum([degree_omnivory(u, par_omn_responsive) for u in sol_omn_responsive_press_grid]), digits = 2)
 
-    # Eigenvalue analysis
-    ## Chain
+
+
+    # EIGENVALUE ANALYSIS
+    ## FOOD CHAIN
     eq_chain_afterpress = find_eq(sol_chain_press[end], par_chain_afterpress)
     chain_λ1 = λ1_stability(cmat(eq_chain_afterpress, par_chain_afterpress))
     # chain_react = ν_stability(cmat(eq_chain, par_chain_afterpress)) CAN DELETE?
 
-    ## Passive Omnivory
+    ## PASSIVE OMNIVORY
     eq_omn_fixed_afterpress = find_eq(sol_omn_fixed_press[end], par_omn_fixed_afterpress)
     omn_fixed_λ1 = λ1_stability(cmat(eq_omn_fixed_afterpress, par_omn_fixed_afterpress))
     # omn_fixed_react = ν_stability(cmat(eq_omn_fixed, par_omn_fixed_afterpress)) CAN DELETE?
 
-    ## Responsive Omnivory
+    ## RESPONSIVE OMNIVORY
     eq_omn_responsive_afterpress = find_eq(sol_omn_responsive_press[end], par_omn_responsive_afterpress)
     omn_responsive_λ1 = λ1_stability(cmat(eq_omn_responsive_afterpress, par_omn_responsive_afterpress))
     # omn_responsive_react = ν_stability(cmat(eq_omn_responsive, par_omn_responsive_afterpress)) CAN DELETE?
@@ -129,6 +133,91 @@ let
     resource_mm = min_max(1, t_end)
     consumer_mm = min_max(2, t_end)
     predator_mm = min_max(3, t_end)
+    
+    
+    # MAX DEGREE OF OMNIVORY PER PHASE 
+    ## Fixed omnivory
+    ### OmEq
+    sol = sol_omn_fixed_press(280:0.01:299)
+    println(
+        "Fixed - Equilibrium: ", 
+        maximum([degree_omnivory(sol[:,i], par_omn_fixed) for i in 1:size(sol)[2]])
+    )
+    ### Pulse
+    sol = sol_omn_fixed_press(300:0.01:310)
+    println(
+        "Fixed - Pulse: ", 
+        maximum([degree_omnivory(sol[:,i], par_omn_fixed) for i in 1:size(sol)[2]])
+    )
+    ### OmT
+    sol = sol_omn_fixed_press(310:0.01:880)
+    println(
+        "Fixed - Transtion: ", 
+        maximum([degree_omnivory(sol[:,i], par_omn_fixed) for i in 1:size(sol)[2]])
+    )
+    ### OmEq
+    sol = sol_omn_fixed_press(880:0.01:900)
+    println(
+        "Fixed - New Equilibrium: ", 
+        maximum([degree_omnivory(sol[:,i], par_omn_fixed) for i in 1:size(sol)[2]])
+    )
+
+    ## Responsive omnivory
+    ### Equilibrium
+    sol = sol_omn_responsive_press(280:0.01:299)
+    println(
+        "Responsive - Equilibrium: ", 
+        maximum([degree_omnivory(sol[:,i], par_omn_responsive) for i in 1:size(sol)[2]])
+    )
+    ### OmB 
+    sol = sol_omn_responsive_press(300:0.01:310)
+    println(
+        "Responsive - Pulse: ", 
+        maximum([degree_omnivory(sol[:,i], par_omn_responsive) for i in 1:size(sol)[2]])
+    )
+    ### OmT
+    sol = sol_omn_responsive_press(310:0.01:750)
+    println(
+        "Responsive - Transition: ", 
+        maximum([degree_omnivory(sol[:,i], par_omn_responsive) for i in 1:size(sol)[2]])
+    )
+    ### OmEq
+    sol = sol_omn_responsive_press(750:0.01:900)
+    println(
+        "Responsive - New Equilibrium: ", 
+        maximum([degree_omnivory(sol[:,i], par_omn_responsive) for i in 1:size(sol)[2]])
+    )
+
+    # ## equilibrium 
+    # sol = sol_omn_fixed_press(180:0.01:199)
+    # println(maximum([degree_omnivory(sol[:,i], par_omn_fixed) for i in 1:size(sol)[2]]))
+    # ## OmB
+    # sol = sol_omn_fixed_press(200:0.01:202)
+    # maximum([degree_omnivory(sol[:,i], par_omn_fixed) for i in 1:size(sol)[2]])
+    # ## OmT (0.4832803846399962)
+    # sol = sol_omn_fixed_press(202:0.01:285)
+    # maximum([degree_omnivory(sol[:,i], par_omn_fixed) for i in 1:size(sol)[2]])
+    # ## eq 2 (0.42526858748649504)
+    # sol = sol_omn_fixed_press(285:0.01:300)
+    # maximum([degree_omnivory(sol[:,i], par_omn_fixed) for i in 1:size(sol)[2]])
+    # 
+    # 
+    # 
+    # ## equilibrium (0.3109726348375338)
+    # sol = sol_omn_responsive_press(80:0.01:99)
+    # maximum([degree_omnivory(sol[:,i], par_omn_responsive) for i in 1:size(sol)[2]])
+    # ## OmB (0.40266771546960234)
+    # sol = sol_omn_responsive_press(100:0.01:104)
+    # maximum([degree_omnivory(sol[:,i], par_omn_responsive) for i in 1:size(sol)[2]])
+    # ## OmT (0.6819340236882527)
+    # sol = sol_omn_responsive_press(105:0.01:245)
+    # maximum([degree_omnivory(sol[:,i], par_omn_responsive) for i in 1:size(sol)[2]])
+    # # eq 2 (0.6786626602158957)
+    # 
+    # sol = sol_omn_responsive_press(245:0.01:300)
+    # maximum([degree_omnivory(sol[:,i], par_omn_responsive) for i in 1:size(sol)[2]])
+    # 
+
 
     # Layout
     fig = figure(figsize = (8, 9))
@@ -141,9 +230,9 @@ let
     ## First Column: Visualizations of Time Series
     ### Food Chain
     subplot(3, 2, 1)
-    hlines(eq_chain_afterpress[1], 100, 300, color = R_col, alpha = 0.5)
-    hlines(eq_chain_afterpress[2], 100, 300, color = C_col, alpha = 0.5)
-    hlines(eq_chain_afterpress[3], 100, 300, color = P_col, alpha = 0.5)
+    hlines(eq_chain_afterpress[1], press_start, t_end, color = R_col, alpha = 0.5)
+    hlines(eq_chain_afterpress[2], press_start, t_end, color = C_col, alpha = 0.5)
+    hlines(eq_chain_afterpress[3], press_start, t_end, color = P_col, alpha = 0.5)
     plot(sol_chain_press_grid.t, sol_chain_press_grid[1, :], color = R_col, label = "R")
     plot(sol_chain_press_grid.t, sol_chain_press_grid[2, :], color = C_col, label = "C")
     plot(sol_chain_press_grid.t, sol_chain_press_grid[3, :], color = P_col, label = "P")
@@ -155,9 +244,9 @@ let
 
     ### Omnivory [Fixed]
     subplot(3, 2, 3)
-    hlines(eq_omn_fixed_afterpress[1], 100, 300, color = R_col, alpha = 0.5)
-    hlines(eq_omn_fixed_afterpress[2], 100, 300, color = C_col, alpha = 0.5)
-    hlines(eq_omn_fixed_afterpress[3], 100, 300, color = P_col, alpha = 0.5)
+    hlines(eq_omn_fixed_afterpress[1], press_start, t_end, color = R_col, alpha = 0.5)
+    hlines(eq_omn_fixed_afterpress[2], press_start, t_end, color = C_col, alpha = 0.5)
+    hlines(eq_omn_fixed_afterpress[3], press_start, t_end, color = P_col, alpha = 0.5)
     plot(sol_omn_fixed_press_grid.t, sol_omn_fixed_press_grid[1, :], color = R_col, label = "R")
     plot(sol_omn_fixed_press_grid.t, sol_omn_fixed_press_grid[2, :], color = C_col, label = "C")
     plot(sol_omn_fixed_press_grid.t, sol_omn_fixed_press_grid[3, :], color = P_col, label = "P")
@@ -172,9 +261,9 @@ let
 
     ### Omnivory [Adaptive]
     subplot(3, 2, 5)
-    hlines(eq_omn_responsive_afterpress[1], 100, 300, color = R_col, alpha = 0.5)
-    hlines(eq_omn_responsive_afterpress[2], 100, 300, color = C_col, alpha = 0.5)
-    hlines(eq_omn_responsive_afterpress[3], 100, 300, color = P_col, alpha = 0.5)
+    hlines(eq_omn_responsive_afterpress[1], press_start, t_end, color = R_col, alpha = 0.5)
+    hlines(eq_omn_responsive_afterpress[2], press_start, t_end, color = C_col, alpha = 0.5)
+    hlines(eq_omn_responsive_afterpress[3], press_start, t_end, color = P_col, alpha = 0.5)
     plot(sol_omn_responsive_press_grid.t, sol_omn_responsive_press_grid[1, :], color = R_col, label = "R")
     plot(sol_omn_responsive_press_grid.t, sol_omn_responsive_press_grid[2, :], color = C_col, label = "C")
     plot(sol_omn_responsive_press_grid.t, sol_omn_responsive_press_grid[3, :], color = P_col, label = "P")

@@ -1,4 +1,5 @@
 using Parameters: @with_kw, @unpack
+
 using LinearAlgebra: eigvals
 using ForwardDiff
 
@@ -22,18 +23,18 @@ end
     K_base = 3.0
     K = 3.0
     # Consumer Parameters
-    a_RC = 1.0
-    h_RC = 1.0
+    a_RC = 1.2
+    h_RC = 0.8
     e_RC = 0.7
     m_C = 0.4
     # Predator Parameters
-    a_CP = 0.25 #0.8
+    a_CP = 0.8
     h_CP = 0.6
     e_CP = 0.6
     m_P = 0.2
     # Omnivory Parameters
-    a_RP = 0.1
-    h_RP = 0.4
+    a_RP = 0.8
+    h_RP = 0.9
     e_RP = 0.4
     Ω = 0.1
     # Forcing Function
@@ -69,23 +70,18 @@ function model!(du, u, p, t)
 
     # setup the density dependent preference
     Ω = p.pref(u, p, t)
-
-    # compute those once for all
-    int_RC = a_RC * R * C / (1 + a_RC * h_RC * R)
-    denom_RCP = 1 + Ω * a_RP * h_RP * R + (1 - Ω) * a_CP * h_CP * C
-    num_CP = (1 - Ω) * a_CP * C * P
-    num_RP = Ω * a_RP * R * P
     
-    # ODE
-    du[1] = r * R * (1 - R / K) - int_RC - num_RP / denom_RCP
-    du[2] = e_RC * int_RC - num_CP / denom_RCP - m_C * C
-    du[3] = (e_RP * num_RP + e_CP * num_CP) / denom_RCP - m_P * P
+    int_RC = a_RC * R * C / (1 + a_RC * h_RC * R)
+
+    du[1] = r * R * (1 - R / K) - int_RC - Ω * a_RP * R * P / (1 + Ω * a_RP * h_RP * R + (1 - Ω) * a_CP * h_CP * C)
+    du[2] = e_RC * int_RC - (1 - Ω) * a_CP * C * P / (1 + Ω * a_RP * h_RP * R + (1 - Ω) * a_CP * h_CP * C) - m_C * C
+    du[3] = (e_RP * Ω * a_RP * R * P + e_CP * (1 - Ω) * a_CP * C * P) / (1 + Ω * a_RP * h_RP * R + (1 - Ω) * a_CP * h_CP * C) - m_P * P
 
     return du
 end
 
 
-# Utilities for doing eigenvalue analysis
+# Utilities for doing eigenvalue analysis using autodiff
 function rhs(u, p)
     du = similar(u)
     model!(du, u, p, zero(u))

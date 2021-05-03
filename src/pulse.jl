@@ -7,7 +7,7 @@ function pulse(K, a, e, m)
     # The global basic level of "Omnivory" we are looking at:
     Ω = 0.1
     
-    par_chain = ModelPar(a_CP = 0.25, Ω = 0.0)
+    par_chain = ModelPar(Ω = 0.0)
     par_chain.K_base = par_chain.K = K
     par_chain.a_CP = a
     par_chain.e_CP = e
@@ -23,7 +23,7 @@ function pulse(K, a, e, m)
 
     
     ## Fixed preference omnivory
-    par_omn_fixed = ModelPar(a_CP = 0.25, Ω = Ω, pref = fixed_pref)
+    par_omn_fixed = ModelPar(Ω = Ω, pref = fixed_pref)
     par_chain.K_base = par_omn_fixed.K = K
     par_omn_fixed.a_CP = a
     par_omn_fixed.e_CP = e
@@ -43,7 +43,7 @@ function pulse(K, a, e, m)
     
     ## Solving for ω we have `ω = Ω * C^* / (Ω * C^* + (1 - Ω) * R^*)`
     ω = Ω * eq[2] / (Ω * eq[2] + (1 - Ω) * eq[1])
-    par_omn = ModelPar(a_CP = 0.25, Ω = Ω, ω = ω, pref = adapt_pref)
+    par_omn = ModelPar(Ω = Ω, ω = ω, pref = adapt_pref)
     par_chain.K_base = par_omn.K = K
     par_omn.a_CP = a
     par_omn.e_CP = e
