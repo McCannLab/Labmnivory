@@ -1,51 +1,54 @@
 # Labmnivory
 [![Reproduce the analysis](https://github.com/McCannLab/Labmnivory/actions/workflows/reproduce.yaml/badge.svg)](https://github.com/McCannLab/Labmnivory/actions/workflows/reproduce.yaml)
 
+
 ## Installation
 
-First install a recent version of [Julia](https://julialang.org/) and the following packages:
+First install a recent version of [Julia](https://julialang.org/) (note that the 
+code is only tested for Julia v1.6.0) and the following packages (which can be installed using `src/install_packages.jl` in this repository, see below):
 
-
-|Package              | Links                                |
-|:--------------------|:-------------------------------------|
+|Package              | Links                                                  |
+|:--------------------|:-------------------------------------------------------|
 |DifferentialEquations| [repo](https://github.com/SciML/DifferentialEquations.jl)|
-|ForwardDiff          | [repo](https://github.com/JuliaDiff/ForwardDiff.jl)|
+|ForwardDiff          | [repo](https://github.com/JuliaDiff/ForwardDiff.jl)    |
 |LinearAlgebra        | [doc](https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/)|
-|Parameters           | [repo](https://github.com/mauro3/Parameters.jl)|
-|PyPlot               | [repo](https://github.com/JuliaPy/PyPlot.jl)|
+|NLsolve              | [repo](https://github.com/JuliaNLSolvers/NLsolve.jl)   |
+|Parameters           | [repo](https://github.com/mauro3/Parameters.jl)        |
+|PyPlot               | [repo](https://github.com/JuliaPy/PyPlot.jl)           |
+|QuadGK               | [repo](https://github.com/JuliaMath/QuadGK.jl)         |
+|RecursiveArrayTool   | [repo](https://github.com/SciML/RecursiveArrayTools.jl)|
 |Statistics           | [repo](https://docs.julialang.org/en/v1/stdlib/Statistics/)|
 
 
-which can be done with the following command line
-
-```julia
-julia src/install_packages.jl
-```
-
-Then clone the repository
+Then clone this repository using [git](https://git-scm.com/)
 
 ```
 git clone https://github.com/McCannLab/Labmnivory.git
 ```
 
-You should be good to go!
+or downloaded the [zip file](https://github.com/McCannLab/Labmnivory/archive/refs/heads/master.zip). If you haven't yet installed the package you can actually 
+use this repository. In a terminal, set your working directory at the root of the freshly cloned/downloaded repository, then use the following command line&nbsp;:
+
+```julia
+julia src/install_packages.jl
+```
+
+You should now be ready to reproduce the analysis.
 
 
 ## File structure 
 
 - `src`: source code 
-
+- `figs`: folder where figures are exported
 
 
 
 ## How to reproduce the analysis 
 
-Once the repo is clones (or downloaded), run the Julia code in `fig_03.jl` and `fig_04.jl` in `src/`. One way to do it is.
+In a terminal, assuming the working directory is set to be the the root of the freshly cloned/downloaded repository, use the following command line&nbsp;:
 
 ```julia
-cd src
-julia fig_03.jl
-julia fig_04.jl
+julia src/pipeline.jl
 ```
 
 

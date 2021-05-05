@@ -1,5 +1,4 @@
 include("basic_omnivory_module.jl")
-include("basic_omnivory_module_noomega.jl")
 include("pulse.jl")
 using DifferentialEquations, NLsolve, QuadGK, PyPlot
 pygui(true)
@@ -78,6 +77,7 @@ let
     col_r = "#cccccc"
     
     ##----------- K
+    println("Range of K")
     fig = figure(figsize = (16, 12))
     subplot(4, 3, 1)
     # fig = figure(figsize = (4, 4))
@@ -86,7 +86,7 @@ let
     plot(rg_K, [-1/res_K[i][1][3] for (i, K) in enumerate(rg_K)], label = "R", color = col_r)
     legend()
     xlabel("K")
-    ylabel("Re(λ1)")
+    ylabel("-1/Re(λ1)")
     # tight_layout()
     # savefig("figs/fig_RT_K.svg")
     
@@ -114,6 +114,7 @@ let
     
         
     ##----------- aCP
+    println("Range of aCP")
     subplot(4, 3, 4)
     # fig = figure(figsize = (4, 4))
     plot(rg_aCP, [-1/res_aCP[i][1][1] for (i, a) in enumerate(rg_aCP)], label = "FC", color = col_fc)
@@ -149,6 +150,7 @@ let
         
         
     ##----------- eCP
+    println("Range of eCP")
     subplot(4, 3, 7)
     # fig = figure(figsize = (4, 4))
     plot(rg_eCP, [-1/res_eCP[i][1][1] for (i, K) in enumerate(rg_eCP)], label = "FC", color = col_fc)
@@ -184,6 +186,7 @@ let
     
     
     ##----------- mP
+    println("Range of mP")
     subplot(4, 3, 10)
     # fig = figure(figsize = (4, 4))
     plot(rg_mP, [-1/res_mP[i][1][1] for (i, K) in enumerate(rg_mP)], label = "FC", color = col_fc)

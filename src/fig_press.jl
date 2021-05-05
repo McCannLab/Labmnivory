@@ -48,7 +48,7 @@ let
 
     # ODE 
     ## FOOD CHAIN
-    par_chain = ModelPar(a_CP = aCP_slc, Ω = 0.0)
+    par_chain = ModelPar(Ω = 0.0)
     par_chain_afterpress = ModelPar(K = 3.0 * press_strength, Ω = 0.0)
 
     prob_chain_press = ODEProblem(model!, u0, t_span, deepcopy(par_chain), tstops = press_start)
@@ -57,7 +57,7 @@ let
     chain_press_hit_equil = find_times_hit_equil(sol_chain_press(t_press))
 
     ## PASSIVE OMNIVORY
-    par_omn_fixed = ModelPar(a_CP = aCP_slc, Ω = Ω, pref = fixed_pref)
+    par_omn_fixed = ModelPar(Ω = Ω, pref = fixed_pref)
     par_omn_fixed_afterpress = ModelPar(K = 3.0 * press_strength, Ω = Ω, pref = fixed_pref)
 
     prob_omn_fixed_press = ODEProblem(model!, u0, t_span, deepcopy(par_omn_fixed), tstops = press_start)
@@ -104,10 +104,9 @@ let
     ## RESPONSIVE OMNIVORY
     eq_omn_responsive_afterpress = find_eq(sol_omn_responsive_press[end], par_omn_responsive_afterpress)
     omn_responsive_λ1 = λ1_stability(cmat(eq_omn_responsive_afterpress, par_omn_responsive_afterpress))
-    # omn_responsive_react = ν_stability(cmat(eq_omn_responsive, par_omn_responsive_afterpress)) CAN DELETE?
 
     # Measure of Overshoot
-    ## What we are asking here is what is the total time * maginitute that the state variables are above or below the equilibrium after a perturbation
+    ## What we are asking here is what is the total time * maginitude that the state variables are above or below the equilibrium after a perturbation
     chain_overshoot(t) = abs.(sol_chain_press(t) .- eq_chain_afterpress)
     omn_fixed_overshoot(t) = abs.(sol_omn_fixed_press(t) .- eq_omn_fixed_afterpress)
     omn_responsive_overshoot(t) = abs.(sol_omn_responsive_press(t) .- eq_omn_responsive_afterpress)
@@ -152,7 +151,7 @@ let
     ### OmT
     sol = sol_omn_fixed_press(310:0.01:880)
     println(
-        "Fixed - Transtion: ", 
+        "Fixed - Transient: ", 
         maximum([degree_omnivory(sol[:,i], par_omn_fixed) for i in 1:size(sol)[2]])
     )
     ### OmEq
@@ -178,7 +177,7 @@ let
     ### OmT
     sol = sol_omn_responsive_press(310:0.01:750)
     println(
-        "Responsive - Transition: ", 
+        "Responsive - Transient: ", 
         maximum([degree_omnivory(sol[:,i], par_omn_responsive) for i in 1:size(sol)[2]])
     )
     ### OmEq
@@ -187,36 +186,6 @@ let
         "Responsive - New Equilibrium: ", 
         maximum([degree_omnivory(sol[:,i], par_omn_responsive) for i in 1:size(sol)[2]])
     )
-
-    # ## equilibrium 
-    # sol = sol_omn_fixed_press(180:0.01:199)
-    # println(maximum([degree_omnivory(sol[:,i], par_omn_fixed) for i in 1:size(sol)[2]]))
-    # ## OmB
-    # sol = sol_omn_fixed_press(200:0.01:202)
-    # maximum([degree_omnivory(sol[:,i], par_omn_fixed) for i in 1:size(sol)[2]])
-    # ## OmT (0.4832803846399962)
-    # sol = sol_omn_fixed_press(202:0.01:285)
-    # maximum([degree_omnivory(sol[:,i], par_omn_fixed) for i in 1:size(sol)[2]])
-    # ## eq 2 (0.42526858748649504)
-    # sol = sol_omn_fixed_press(285:0.01:300)
-    # maximum([degree_omnivory(sol[:,i], par_omn_fixed) for i in 1:size(sol)[2]])
-    # 
-    # 
-    # 
-    # ## equilibrium (0.3109726348375338)
-    # sol = sol_omn_responsive_press(80:0.01:99)
-    # maximum([degree_omnivory(sol[:,i], par_omn_responsive) for i in 1:size(sol)[2]])
-    # ## OmB (0.40266771546960234)
-    # sol = sol_omn_responsive_press(100:0.01:104)
-    # maximum([degree_omnivory(sol[:,i], par_omn_responsive) for i in 1:size(sol)[2]])
-    # ## OmT (0.6819340236882527)
-    # sol = sol_omn_responsive_press(105:0.01:245)
-    # maximum([degree_omnivory(sol[:,i], par_omn_responsive) for i in 1:size(sol)[2]])
-    # # eq 2 (0.6786626602158957)
-    # 
-    # sol = sol_omn_responsive_press(245:0.01:300)
-    # maximum([degree_omnivory(sol[:,i], par_omn_responsive) for i in 1:size(sol)[2]])
-    # 
 
 
     # Layout

@@ -159,7 +159,7 @@ let
     ### OmT
     sol = sol_omn_fixed_pulse(205:0.01:325)
     println(
-        "Fixed - Transtion: ", 
+        "Fixed - Transient: ", 
         maximum([degree_omnivory(sol[:,i], par_omn_fixed) for i in 1:size(sol)[2]])
     )
 
@@ -179,7 +179,7 @@ let
     ### OmT
     sol = sol_omn_responsive_pulse(205:0.01:310)
     println(
-        "Responsive - Transition: ", 
+        "Responsive - Transient: ", 
         maximum([degree_omnivory(sol[:,i], par_omn_responsive) for i in 1:size(sol)[2]])
     )
 
