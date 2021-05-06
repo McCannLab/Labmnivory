@@ -4,8 +4,9 @@
 
 ## Installation
 
-First install a recent version of [Julia](https://julialang.org/) (note that the 
-code is only tested for Julia v1.6.0) and the following packages (which can be installed using `src/install_packages.jl` in this repository, see below):
+
+Simulation are implemented in [Julia](https://julialang.org/), a recent version of Julia is thus  required to reproduce this analysis (note that the 
+code is only tested for Julia v1.6.0) along with the following packages (note that they can be installed using `src/install_packages.jl` in this repository, see below):
 
 |Package              | Links                                                  |
 |:--------------------|:-------------------------------------------------------|
@@ -20,14 +21,14 @@ code is only tested for Julia v1.6.0) and the following packages (which can be i
 |Statistics           | [repo](https://docs.julialang.org/en/v1/stdlib/Statistics/)|
 
 
-Then clone this repository using [git](https://git-scm.com/)
+Then, clone this repository using [git](https://git-scm.com/):
 
-```
+```sh
 git clone https://github.com/McCannLab/Labmnivory.git
 ```
 
-or downloaded the [zip file](https://github.com/McCannLab/Labmnivory/archive/refs/heads/master.zip). If you haven't yet installed the package you can actually 
-use this repository. In a terminal, set your working directory at the root of the freshly cloned/downloaded repository, then use the following command line&nbsp;:
+or downloaded the [zip file](https://github.com/McCannLab/Labmnivory/archive/refs/heads/master.zip). If you haven't yet installed the packages, you can actually 
+use `src/install_packages.jl` in this repository. To do so, in a terminal, set your working directory at the root of the freshly cloned/downloaded repository, then use the following command line&nbsp;:
 
 ```julia
 julia src/install_packages.jl
@@ -36,7 +37,7 @@ julia src/install_packages.jl
 You should now be ready to reproduce the analysis.
 
 
-## File structure 
+## Repo structure 
 
 - `src`: source code 
 - `figs`: folder where figures are exported

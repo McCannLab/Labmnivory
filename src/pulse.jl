@@ -1,10 +1,10 @@
 function pulse(K, a, e, m)
     
     u0 = [1.0, 1.5, 1.5]
-    t_grid = range(0.0, t_end, length = 10000)
-    t_start = 75.0
-
-    # The global basic level of "Omnivory" we are looking at:
+    t_end = 350
+    t_span = (0.0, t_end)
+    t_start = 175.0
+    t_grid = range(pulse_end, t_end, length = 10000)
     Ω = 0.1
     
     par_chain = ModelPar(Ω = 0.0)
@@ -17,7 +17,7 @@ function pulse(K, a, e, m)
     sol_chain = solve(prob_chain, reltol = 1e-8, abstol = 1e-8)
     sol_chain_grid = sol_chain(t_grid)
 
-    prob_chain = ODEProblem(model!, u0, t_span, deepcopy(par_chain), tstops = mast_event_times)
+    prob_chain = ODEProblem(model!, u0, t_span, deepcopy(par_chain), tstops = pulse_event_times)
     sol_chain_mast = solve(prob_chain, reltol = 1e-8, abstol = 1e-8, callback = cb)
     sol_chain_mast_grid = sol_chain_mast(t_grid)
 
@@ -29,11 +29,11 @@ function pulse(K, a, e, m)
     par_omn_fixed.e_CP = e
     par_omn_fixed.m_P = m
     
-    prob_omn_fixed = ODEProblem(model!, u0, t_span, deepcopy(par_omn_fixed), tstops = mast_event_times)
+    prob_omn_fixed = ODEProblem(model!, u0, t_span, deepcopy(par_omn_fixed), tstops = pulse_event_times)
     sol_omn_fixed = solve(prob_omn_fixed, reltol = 1e-8, abstol = 1e-8)
     sol_omn_fixed_grid = sol_omn_fixed(t_grid)
     
-    prob_omn_fixed_mast = ODEProblem(model!, u0, t_span, deepcopy(par_omn_fixed), tstops = mast_event_times)
+    prob_omn_fixed_mast = ODEProblem(model!, u0, t_span, deepcopy(par_omn_fixed), tstops = pulse_event_times)
     sol_omn_fixed_mast = solve(prob_omn_fixed_mast, reltol = 1e-8, abstol = 1e-8, callback = cb)
     sol_omn_fixed_mast_grid = sol_omn_fixed_mast(t_grid)
     
@@ -49,11 +49,11 @@ function pulse(K, a, e, m)
     par_omn.e_CP = e
     par_omn.m_P = m
     
-    prob_omn = ODEProblem(model!, u0, t_span, deepcopy(par_omn), tstops = mast_event_times)
+    prob_omn = ODEProblem(model!, u0, t_span, deepcopy(par_omn), tstops = pulse_event_times)
     sol_omn = solve(prob_omn, reltol = 1e-8, abstol = 1e-8)
     sol_omn_grid = sol_omn(t_grid)
     
-    prob_omn = ODEProblem(model!, u0, t_span, deepcopy(par_omn), tstops = mast_event_times)
+    prob_omn = ODEProblem(model!, u0, t_span, deepcopy(par_omn), tstops = pulse_event_times)
     sol_omn_mast = solve(prob_omn, reltol = 1e-8, abstol = 1e-8, callback = cb)
     sol_omn_mast_grid = sol_omn_mast(t_grid)
 
@@ -85,18 +85,18 @@ function pulse(K, a, e, m)
     omn_overshoot(t) = abs.(sol_omn(t) .- eq_omn)
     
     ##
-    chain_OS = [quadgk(t -> chain_overshoot(t)[1], first_mast, first_mast + mast_freq)[1],
-                quadgk(t -> chain_overshoot(t)[2], first_mast, first_mast + mast_freq)[1],
-                quadgk(t -> chain_overshoot(t)[3], first_mast, first_mast + mast_freq)[1]
+    chain_OS = [quadgk(t -> chain_overshoot(t)[1], pulse_end, t_end)[1],
+                quadgk(t -> chain_overshoot(t)[2], pulse_end, t_end)[1],
+                quadgk(t -> chain_overshoot(t)[3], pulse_end, t_end)[1]
                 ]
     
-    omn_fixed_OS = [quadgk(t -> omn_fixed_overshoot(t)[1], first_mast, first_mast + mast_freq)[1],
-                    quadgk(t -> omn_fixed_overshoot(t)[2], first_mast, first_mast + mast_freq)[1],
-                    quadgk(t -> omn_fixed_overshoot(t)[3], first_mast, first_mast + mast_freq)[1]]
+    omn_fixed_OS = [quadgk(t -> omn_fixed_overshoot(t)[1], pulse_end , t_end)[1],
+                    quadgk(t -> omn_fixed_overshoot(t)[2], pulse_end , t_end)[1],
+                    quadgk(t -> omn_fixed_overshoot(t)[3], pulse_end , t_end)[1]]
     
-    omn_OS = [quadgk(t -> omn_overshoot(t)[1], first_mast, first_mast + mast_freq)[1],
-              quadgk(t -> omn_overshoot(t)[2], first_mast, first_mast + mast_freq)[1],
-              quadgk(t -> omn_overshoot(t)[3], first_mast, first_mast + mast_freq)[1]]
+    omn_OS = [quadgk(t -> omn_overshoot(t)[1], pulse_end, t_end)[1],
+              quadgk(t -> omn_overshoot(t)[2], pulse_end, t_end)[1],
+              quadgk(t -> omn_overshoot(t)[3], pulse_end, t_end)[1]]
     
     
      g1mm = [
