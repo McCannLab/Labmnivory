@@ -14,7 +14,8 @@ global pulse_length = 2.0
 global pulse_start = 200
 global pulse_end = pulse_start + pulse_length
 global pulse_event_times = union(pulse_start, pulse_end)
-pulse_strength = 2.0
+global pulse_strength = 2.0
+
 
 pulse_event(u, t, integrator) = t ∈ pulse_event_times
 
@@ -34,6 +35,19 @@ function find_time_hit_res_max(data)
     return data.t[max_res[2]]
 end
 
+function find_times_hit_equil(data)
+    eq = data[1, end], data[2, end], data[3, end]
+    times = zeros(3)
+    for animal in 1:3
+        for i in eachindex(data)
+            if isapprox(data[animal,i],eq[animal], atol = 0.001)
+                times[animal] = data.t[i]
+                break
+            end
+        end
+    end
+    return times
+end
 
 
 let
@@ -43,6 +57,7 @@ let
     t_span = (0.0, t_end)
     t_start = 175.0
     t_grid = range(t_start, t_end, length = 10000)
+    t_after = range(pulse_end, t_end, length = 10000)
     # The global basic level of "Omnivory" we are looking at:
     Ω = 0.1
 
@@ -52,12 +67,14 @@ let
     prob_chain_pulse = ODEProblem(model!, u0, t_span, deepcopy(par_chain), tstops = pulse_event_times)
     sol_chain_pulse = solve(prob_chain_pulse, reltol = 1e-8, abstol = 1e-8, callback = cb)
     sol_chain_pulse_grid = sol_chain_pulse(t_grid)
+    chain_pulse_hit_equil = find_times_hit_equil(sol_chain_pulse(t_after))
 
     ## PASSIVE OMNIVORY
     par_omn_fixed = ModelPar(Ω = Ω, pref = fixed_pref)
     prob_omn_fixed_pulse = ODEProblem(model!, u0, t_span, deepcopy(par_omn_fixed), tstops = pulse_event_times)
     sol_omn_fixed_pulse = solve(prob_omn_fixed_pulse, reltol = 1e-8, abstol = 1e-8, callback = cb)
     sol_omn_fixed_pulse_grid = sol_omn_fixed_pulse(t_grid)
+    fixed_pulse_hit_equil = find_times_hit_equil(sol_omn_fixed_pulse(t_after))
 
     ## RESPONSIVE OMNIVORY
     ### Solve for ω so that at equlibrium Ω_fixed = Ω_adapt
@@ -68,6 +85,7 @@ let
     prob_omn_responsive_pulse = ODEProblem(model!, u0, t_span, deepcopy(par_omn_responsive), tstops = pulse_event_times)
     sol_omn_responsive_pulse = solve(prob_omn_responsive_pulse, reltol = 1e-8, abstol = 1e-8, callback = cb)
     sol_omn_responsive_pulse_grid = sol_omn_responsive_pulse(t_grid)
+    responsive_pulse_hit_equil = find_times_hit_equil(sol_omn_responsive_pulse(t_after))
 
 
     # EIGENVALUE ANALYSIS
@@ -88,25 +106,27 @@ let
 
     # Measure of Overshoot
     ## What we are asking here is what is the total time * maginitute that the state variables are above or below the equilibrium after a perturbation
+    # Measure of Overshoot
+    ## What we are asking here is what is the total time * maginitude that the state variables are above or below the equilibrium after a perturbation
     chain_overshoot(t) = abs.(sol_chain_pulse(t) .- eq_chain)
     omn_fixed_overshoot(t) = abs.(sol_omn_fixed_pulse(t) .- eq_omn_fixed)
     omn_responsive_overshoot(t) = abs.(sol_omn_responsive_pulse(t) .- eq_omn_responsive)
 
     function overshoot(animal, t_end)
-        return [quadgk(t -> chain_overshoot(t)[animal], 100.0, t_end)[1],
-        quadgk(t -> omn_fixed_overshoot(t)[animal], 100.0, t_end)[1],
-        quadgk(t -> omn_responsive_overshoot(t)[animal], 100.0, t_end)[1]]
+        return [quadgk(t -> chain_overshoot(t)[animal], chain_pulse_hit_equil[animal], t_end)[1],
+        quadgk(t -> omn_fixed_overshoot(t)[animal], fixed_pulse_hit_equil[animal], t_end)[1],
+        quadgk(t -> omn_responsive_overshoot(t)[animal], responsive_pulse_hit_equil[animal], t_end)[1]]
     end
 
     resource_OS = overshoot(1, t_end)
     consumer_OS = overshoot(2, t_end)
     predator_OS = overshoot(3, t_end)
 
-    #Calculate max-min metric
+    # Calculate max-min metric
     function min_max(animal, t_end)
-        return [maximum(sol_chain_pulse(range(res_max_times[animal], t_end, length = 10000))[animal, :]) - minimum(sol_chain_pulse(range(res_max_times[animal], t_end, length = 10000))[animal, :]),
-        maximum(sol_omn_fixed_pulse(range(res_max_times[animal], t_end, length = 10000))[animal, :]) - minimum(sol_omn_fixed_pulse(range(res_max_times[animal], t_end, length = 10000))[animal, :]),
-        maximum(sol_omn_responsive_pulse(range(res_max_times[animal], t_end, length = 10000))[animal, :]) - minimum(sol_omn_responsive_pulse(range(res_max_times[animal], t_end, length = 10000))[animal, :])
+        return [maximum(sol_chain_pulse(range(chain_pulse_hit_equil[animal], t_end, length = 10000))[animal,:]) - minimum(sol_chain_pulse(range(chain_pulse_hit_equil[animal], t_end, length = 10000))[animal,:]),
+        maximum(sol_omn_fixed_pulse(range(fixed_pulse_hit_equil[animal], t_end, length = 10000))[animal,:]) - minimum(sol_omn_fixed_pulse(range(fixed_pulse_hit_equil[animal], t_end, length = 10000))[animal,:]),
+        maximum(sol_omn_responsive_pulse(range(responsive_pulse_hit_equil[animal], t_end, length = 10000))[animal,:]) - minimum(sol_omn_responsive_pulse(range(responsive_pulse_hit_equil[animal], t_end, length = 10000))[animal,:])
             ]
     end
 

@@ -14,7 +14,8 @@ global pulse_length = 2.0
 global pulse_start = 200
 global pulse_end = pulse_start + pulse_length
 global pulse_event_times = union(pulse_start, pulse_end)
-pulse_strength = 2.0
+global pulse_strength = 2.0
+
 
 pulse_event(u, t, integrator) = t ∈ pulse_event_times
 
@@ -29,17 +30,49 @@ end
 
 cb = DiscreteCallback(pulse_event, forcing!)
 
+function find_times_hit_equil(data)
+    eq = data[1, end], data[2, end], data[3, end]
+    times = zeros(3)
+    for animal in 1:3
+        for i in eachindex(data)
+            if isapprox(data[animal,i], eq[animal], atol = 0.001)
+                times[animal] = data.t[i]
+                break
+            end
+        end
+    end
+    return times
+end
+
+function plot_unit(rg, res, id, leg = false, xlb = "", ylb = "")
+    cols = ["#000000" "#555555" "#cccccc"]
+    labs = ["FC" "P" "R"]
+    lty = ["solid" "dashed" "solid"]
+    for j in 1:3
+        plot(rg, [res[i][id][j] for i in eachindex(rg)], 
+            label = labs[j], color = cols[j], linestyle = lty[j])
+    end 
+    if leg 
+        legend()
+    end 
+    xlabel(xlb)
+    ylabel(ylb)
+end 
 
 
 let
 
-    # NB: `pulse()` returns first eigen value, degree of overshoot and 
-    # Max-Min it uses the same setup as `fig_press.jl`
+    # NB: `pulse()` returns :
+    # 1: real part of first eigen value, and 
+    # 2: imaginary part of first eigen value
+    # 3: reactivity 
+    # 4-6: degree of overshoot
+    # 7-9: max-min
     
     # range of K
     println("Simulations for a range of K values")
     res_K = []
-    rg_K = 1:0.05:4
+    rg_K = 1.1:0.05:4
     for k in rg_K
         res_K = push!(res_K, pulse(k, 0.5, 0.6, 0.2))
     end 
@@ -47,7 +80,7 @@ let
     # range of a_CP
     println("Simulations for a range of aCP values")
     res_aCP = []
-    rg_aCP = 0.25:.0025:.65
+    rg_aCP = 0.25:.0025:.55
     for a in rg_aCP
         res_aCP = push!(res_aCP, pulse(3.0, a, 0.6, 0.2))
     end 
@@ -68,243 +101,45 @@ let
         res_mP = push!(res_mP, pulse(3.0, 0.5, 0.6, m))
     end 
     
-
     
     
     println("Drawing Figure S1")
-    fig = figure(figsize = (14, 9))
-    # colors
-    col_fc = "#000000"
-    col_p = "#555555"
-    col_r = "#cccccc"
     
+    fig = figure(figsize = (14, 9))
+    ind = [1 2 6 9]
     
     ##----------- K
-    subplot(4, 4, 1)
-    # fig = figure(figsize = (4, 4))
-    plot(rg_K, [-1/res_K[i][1][1] for (i, K) in enumerate(rg_K)], label = "FC", color = col_fc)
-    plot(rg_K, [-1/res_K[i][1][2] for (i, K) in enumerate(rg_K)], label = "P", color = col_p, linestyle = "dashed")
-    plot(rg_K, [-1/res_K[i][1][3] for (i, K) in enumerate(rg_K)], label = "R", color = col_r)
-    # legend()
-    xlabel("K")
-    ylabel("Re(λ1)")
-    # tight_layout()
-    # savefig("figs/fig_RT_K.svg")
+    tly = ["Re(λ1)" "Im(λ1)" "Degree of Overshoot" "Max-Min"]
+    tlx = ["" "" "" "K"]
+    for i in 1:4
+        subplot(4, 4, (i - 1) * 4 + 1)
+        plot_unit(rg_K, res_K, ind[i], false, tlx[i], tly[i])
+    end 
     
-    subplot(4, 4, 2)
-    # fig = figure(figsize = (4, 4))
-    plot(rg_K, [res_K[i][9][1] for (i, K) in enumerate(rg_K)], label = "FC", color = col_fc)
-    plot(rg_K, [res_K[i][9][2] for (i, K) in enumerate(rg_K)], label = "P", color = col_p, linestyle = "dashed")
-    plot(rg_K, [res_K[i][9][3] for (i, K) in enumerate(rg_K)], label = "R", color = col_r)
-    # legend()
-    xlabel("K")
-    ylabel("Im(λ1)")
-    
-    # fig = figure(figsize = (4, 4))
-    subplot(4, 4, 3)
-    plot(rg_K, [res_K[i][5][1] for (i, K) in enumerate(rg_K)], label = "FC", color = col_fc)
-    plot(rg_K, [res_K[i][5][2] for (i, K) in enumerate(rg_K)], label = "P", color = col_p, linestyle = "dashed")
-    plot(rg_K, [res_K[i][5][3] for (i, K) in enumerate(rg_K)], label = "R", color = col_r)
-    # legend()
-    xlabel("K")
-    ylabel("Degree of Overshoot")
-    # tight_layout()
-    # savefig("figs/fig_OS_K.svg")
-    
-    # fig = figure(figsize = (4, 4))
-    subplot(4, 4, 4)
-    plot(rg_K, [res_K[i][8][1] for (i, K) in enumerate(rg_K)], label = "FC", color = col_fc)
-    plot(rg_K, [res_K[i][8][2] for (i, K) in enumerate(rg_K)], label = "P", color = col_p, linestyle = "dashed")
-    plot(rg_K, [res_K[i][8][3] for (i, K) in enumerate(rg_K)], label = "R", color = col_r)
-    legend()
-    xlabel("K")
-    ylabel("Max-Min")
-    # tight_layout()
-    # savefig("figs/fig_MM_K.svg")
-    
-        
-        
-        
     ##----------- aCP
-    subplot(4, 4, 5)
-    # fig = figure(figsize = (4, 4))
-    plot(rg_aCP, [res_aCP[i][1][1] for (i, a) in enumerate(rg_aCP)], label = "FC", color = col_fc)
-    plot(rg_aCP, [res_aCP[i][1][2] for (i, a) in enumerate(rg_aCP)], label = "P", color = col_p, linestyle = "dashed")
-    plot(rg_aCP, [res_aCP[i][1][3] for (i, a) in enumerate(rg_aCP)], label = "R", color = col_r)
-    # legend()
-    xlabel("aCP")
-    ylabel("Re(λ1)")
-    # tight_layout()
-    # savefig("figs/fig_RT_aCP.svg")
-    
-    subplot(4, 4, 6)
-    # fig = figure(figsize = (4, 4))
-    plot(rg_aCP, [res_aCP[i][9][1] for (i, K) in enumerate(rg_aCP)], label = "FC", color = col_fc)
-    plot(rg_aCP, [res_aCP[i][9][2] for (i, K) in enumerate(rg_aCP)], label = "P", color = col_p, linestyle = "dashed")
-    plot(rg_aCP, [res_aCP[i][9][3] for (i, K) in enumerate(rg_aCP)], label = "R", color = col_r)
-    # legend()
-    xlabel("aCP")
-    ylabel("Im(λ1)")
-    
-    subplot(4, 4, 7)
-    # fig = figure(figsize = (4, 4))
-    plot(rg_aCP, [res_aCP[i][5][1] for (i, a) in enumerate(rg_aCP)], label = "FC", color = col_fc)
-    plot(rg_aCP, [res_aCP[i][5][2] for (i, a) in enumerate(rg_aCP)], label = "P", color = col_p, linestyle = "dashed")
-    plot(rg_aCP, [res_aCP[i][5][3] for (i, a) in enumerate(rg_aCP)], label = "R", color = col_r)
-    # legend()
-    xlabel("aCP")
-    ylabel("Degree of Overshoot")
-    # tight_layout()
-    # savefig("figs/fig_OS_aCP.svg")
-    
-    subplot(4, 4, 8)
-    # fig = figure(figsize = (4, 4))
-    plot(rg_aCP, [res_aCP[i][8][1] for (i, a) in enumerate(rg_aCP)], label = "FC", color = col_fc)
-    plot(rg_aCP, [res_aCP[i][8][2] for (i, a) in enumerate(rg_aCP)], label = "P", color = col_p, linestyle = "dashed")
-    plot(rg_aCP, [res_aCP[i][8][3] for (i, a) in enumerate(rg_aCP)], label = "R", color = col_r)
-    legend()
-    xlabel("aCP")
-    ylabel("Max-Min")
-    # tight_layout()
-    # savefig("figs/fig_MM_aCP.svg")
-        
-        
-        
+    tlx = ["" "" "" "aCP"]
+    for i in 1:4
+        subplot(4, 4, (i-1)*4 + 2)
+        plot_unit(rg_aCP, res_aCP, ind[i], false, tlx[i], "")
+    end 
+
     ##----------- eCP
-    subplot(4, 4, 9)
-    # fig = figure(figsize = (4, 4))
-    plot(rg_eCP, [res_eCP[i][1][1] for (i, K) in enumerate(rg_eCP)], label = "FC", color = col_fc)
-    plot(rg_eCP, [res_eCP[i][1][2] for (i, K) in enumerate(rg_eCP)], label = "P", color = col_p, linestyle = "dashed")
-    plot(rg_eCP, [res_eCP[i][1][3] for (i, K) in enumerate(rg_eCP)], label = "R", color = col_r)
-    # legend()
-    xlabel("eCP")
-    ylabel("Re(λ1)")
-    # tight_layout()
-    # savefig("figs/fig_RT_eCP.svg")
-    
-    
-    subplot(4, 4, 10)
-    # fig = figure(figsize = (4, 4))
-    plot(rg_eCP, [res_eCP[i][9][1] for (i, K) in enumerate(rg_eCP)], label = "FC", color = col_fc)
-    plot(rg_eCP, [res_eCP[i][9][2] for (i, K) in enumerate(rg_eCP)], label = "P", color = col_p, linestyle = "dashed")
-    plot(rg_eCP, [res_eCP[i][9][3] for (i, K) in enumerate(rg_eCP)], label = "R", color = col_r)
-    # legend()
-    xlabel("eCP")
-    ylabel("Im(λ1)")
-    
-    subplot(4, 4, 11)
-    # fig = figure(figsize = (4, 4))
-    plot(rg_eCP, [res_eCP[i][5][1] for (i, K) in enumerate(rg_eCP)], label = "FC", color = col_fc)
-    plot(rg_eCP, [res_eCP[i][5][2] for (i, K) in enumerate(rg_eCP)], label = "P", color = col_p, linestyle = "dashed")
-    plot(rg_eCP, [res_eCP[i][5][3] for (i, K) in enumerate(rg_eCP)], label = "R", color = col_r)
-    # legend()
-    xlabel("eCP")
-    ylabel("Degree of Overshoot")
-    # tight_layout()
-    # savefig("figs/fig_OS_eCP.svg")
-    
-    subplot(4, 4, 12)
-    # fig = figure(figsize = (4, 4))
-    plot(rg_eCP, [res_eCP[i][8][1] for (i, K) in enumerate(rg_eCP)], label = "FC",color = col_fc)
-    plot(rg_eCP, [res_eCP[i][8][2] for (i, K) in enumerate(rg_eCP)], label = "P",color = col_p, linestyle = "dashed")
-    plot(rg_eCP, [res_eCP[i][8][3] for (i, K) in enumerate(rg_eCP)], label = "R",color = col_r)
-    legend()
-    xlabel("eCP")
-    ylabel("Max-Min")
-    # tight_layout()
-    # savefig("figs/fig_MM_eCP.svg")
-    
-    
+    tlx = ["" "" "" "eCP"]
+    for i in 1:4
+        subplot(4, 4, (i-1)*4 + 3)
+        plot_unit(rg_eCP, res_eCP, ind[i], false, tlx[i], "")
+    end 
+
     ##----------- mP
-    subplot(4, 4, 13)
-    # fig = figure(figsize = (4, 4))
-    plot(rg_mP, [res_mP[i][1][1] for (i, K) in enumerate(rg_mP)], label = "FC", color = col_fc)
-    plot(rg_mP, [res_mP[i][1][2] for (i, K) in enumerate(rg_mP)], label = "P", color = col_p, linestyle = "dashed")
-    plot(rg_mP, [res_mP[i][1][3] for (i, K) in enumerate(rg_mP)], label = "R", color = col_r)
-    # legend()
-    xlabel("mP")
-    ylabel("Re(λ1)")
-    # tight_layout()
-    # savefig("figs/fig_RT_mP.svg")
-    
-    subplot(4, 4, 14)
-    # fig = figure(figsize = (4, 4))
-    plot(rg_mP, [res_mP[i][9][1] for (i, K) in enumerate(rg_mP)], label = "FC", color = col_fc)
-    plot(rg_mP, [res_mP[i][9][2] for (i, K) in enumerate(rg_mP)], label = "P", color = col_p, linestyle = "dashed")
-    plot(rg_mP, [res_mP[i][9][3] for (i, K) in enumerate(rg_mP)], label = "R", color = col_r)
-    # legend()
-    xlabel("mP")
-    ylabel("Im(λ1)")
-    
-    subplot(4, 4, 15)
-    # fig = figure(figsize = (4, 4))
-    plot(rg_mP, [res_mP[i][5][1] for (i, K) in enumerate(rg_mP)], label = "FC", color = col_fc)
-    plot(rg_mP, [res_mP[i][5][2] for (i, K) in enumerate(rg_mP)], label = "P", color = col_p, linestyle = "dashed")
-    plot(rg_mP, [res_mP[i][5][3] for (i, K) in enumerate(rg_mP)], label = "R", color = col_r)
-    # legend()
-    xlabel("mP")
-    ylabel("Degree of Overshoot")
-    # tight_layout()
-    # savefig("figs/fig_OS_mP.svg")
-    
-    #
-    subplot(4, 4, 16)
-    # fig = figure(figsize = (4, 4))
-    plot(rg_mP, [res_mP[i][8][1] for (i, K) in enumerate(rg_mP)], label = "FC", color = col_fc)
-    plot(rg_mP, [res_mP[i][8][2] for (i, K) in enumerate(rg_mP)], label = "P", color = col_p, linestyle = "dashed")
-    plot(rg_mP, [res_mP[i][8][3] for (i, K) in enumerate(rg_mP)], label = "R", color = col_r)
-    legend()
-    xlabel("mP")
-    ylabel("Max-Min")
+    tlx = ["" "" "" "mP"]
+    for i in 1:4
+        subplot(4, 4, (i-1)*4 + 4)
+        plot_unit(rg_mP, res_mP, ind[i], true, tlx[i], "")
+    end 
+
     tight_layout()
     savefig("figs/figS1_plus.svg")
-    # savefig("figs/fig_MM_mP.svg")
-
 
     
 end    
-    
-    # Complemetary figures (no longer used)
-    # ## Imag
-    # fig = figure(figsize = (4, 4))
-    # plot(rg_K, [res_K[i][9][1] for (i, K) in enumerate(rg_K)], label = "FC", color = col_fc)
-    # plot(rg_K, [res_K[i][9][2] for (i, K) in enumerate(rg_K)], label = "P", color = col_p, linestyle = "dashed")
-    # plot(rg_K, [res_K[i][9][3] for (i, K) in enumerate(rg_K)], label = "R", color = col_r)
-    # legend()
-    # xlabel("K")
-    # ylabel("Im(λ1)")
-    # tight_layout()
-    # savefig("figs/fig_im_K.svg")
-    # 
-    # 
-    # fig = figure(figsize = (4, 4))
-    # plot(rg_aCP, [res_aCP[i][9][1] for (i, a) in enumerate(rg_aCP)], label = "FC", color = col_fc)
-    # plot(rg_aCP, [res_aCP[i][9][2] for (i, a) in enumerate(rg_aCP)], label = "P", color = col_p, linestyle = "dashed")
-    # plot(rg_aCP, [res_aCP[i][9][3] for (i, a) in enumerate(rg_aCP)], label = "R", color = col_r)
-    # legend()
-    # xlabel("aCP")
-    # ylabel("Im(λ1)")
-    # tight_layout()
-    # savefig("figs/fig_im_aCP.svg")
-    # 
-    # # subplot(4, 3, 7)
-    # fig = figure(figsize = (4, 4))
-    # plot(rg_eCP, [res_eCP[i][9][1] for (i, K) in enumerate(rg_eCP)], label = "FC", color = col_fc)
-    # plot(rg_eCP, [res_eCP[i][9][2] for (i, K) in enumerate(rg_eCP)], label = "P", color = col_p, linestyle = "dashed")
-    # plot(rg_eCP, [res_eCP[i][9][3] for (i, K) in enumerate(rg_eCP)], label = "R", color = col_r)
-    # legend()
-    # xlabel("eCP")
-    # ylabel("Im(λ1)")
-    # tight_layout()
-    # savefig("figs/fig_im_eCP.svg")
-    # 
-    # fig = figure(figsize = (4, 4))
-    # plot(rg_mP, [res_mP[i][9][1] for (i, K) in enumerate(rg_mP)], label = "FC", color = col_fc)
-    # plot(rg_mP, [res_mP[i][9][2] for (i, K) in enumerate(rg_mP)], label = "P", color = col_p, linestyle = "dashed")
-    # plot(rg_mP, [res_mP[i][9][3] for (i, K) in enumerate(rg_mP)], label = "R", color = col_r)
-    # legend()
-    # xlabel("mP")
-    # ylabel("Img()")
-    # tight_layout()
-    # savefig("figs/fig_im_mP.svg")
     

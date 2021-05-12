@@ -4,6 +4,17 @@ using DifferentialEquations, NLsolve, QuadGK, PyPlot
 # Press
 press_start = 300.0
 press_strength = 1.2
+u0 = [1.0, 1.5, 1.5]
+t_end = 900
+t_span = (0.0, t_end)
+# start at 220; pulse at t=300 this is just for clarity on figure (at t=200
+# equilibrium is reached)
+t_start = 220.0
+t_grid = range(t_start, t_end, length = 10000)
+t_press = range(press_start, t_end, length = 10000)
+
+# The global basic level of "Omnivory" we are looking at:
+Ω = 0.1
 
 press_event(u, t, integrator) = t ∈ press_start
 
@@ -33,18 +44,6 @@ end
 
 
 let
-    u0 = [1.0, 1.5, 1.5]
-    t_end = 900
-    t_span = (0.0, t_end)
-    # start at 220; pulse at t=300 this is just for clarity on figure (at t=200
-    # equilibrium is reached)
-    t_start = 220.0
-    t_grid = range(t_start, t_end, length = 10000)
-    t_press = range(press_start, t_end, length = 10000)
-
-    # The global basic level of "Omnivory" we are looking at:
-    Ω = 0.1
-
     # ODE 
     ## FOOD CHAIN
     par_chain = ModelPar(Ω = 0.0)
@@ -105,7 +104,6 @@ let
     omn_responsive_λ1 = λ1_stability(cmat(eq_omn_responsive_afterpress, par_omn_responsive_afterpress))
 
     # Measure of Overshoot
-    ## What we are asking here is what is the total time * maginitude that the state variables are above or below the equilibrium after a perturbation
     chain_overshoot(t) = abs.(sol_chain_press(t) .- eq_chain_afterpress)
     omn_fixed_overshoot(t) = abs.(sol_omn_fixed_press(t) .- eq_omn_fixed_afterpress)
     omn_responsive_overshoot(t) = abs.(sol_omn_responsive_press(t) .- eq_omn_responsive_afterpress)
