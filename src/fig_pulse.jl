@@ -74,19 +74,16 @@ let
     ## FOOD CHAIN
     eq_chain = find_eq(sol_chain_pulse_grid[1], par_chain)
     chain_λ1 = λ1_stability(cmat(eq_chain, par_chain))
-    # chain_react = ν_stability(cmat(eq_chain, par_chain)) CAN DELETE?
 
     ## PASSIVE OMNIVORY
     eq_omn_fixed = find_eq(sol_omn_fixed_pulse_grid[1], par_omn_fixed)
     omn_fixed_λ1 = λ1_stability(cmat(eq_omn_fixed, par_omn_fixed))
-    # omn_fixed_react = ν_stability(cmat(eq_omn_fixed, par_omn_fixed)) CAN DELETE?
 
     ## RESPONSIVE OMNIVORY
     eq_omn_responsive = find_eq(sol_omn_responsive_pulse_grid[1], par_omn_responsive)
     omn_responsive_λ1 = λ1_stability(cmat(eq_omn_responsive, par_omn_responsive))
-    # omn_responsive_react = ν_stability(cmat(eq_omn_responsive, par_omn_responsive)) CAN DELETE?
 
-    #Find times for each model where Resource maximized after pulse
+    # Find times for each model where Resource maximized after pulse
     res_max_times = [find_time_hit_res_max(sol_chain_pulse_grid), find_time_hit_res_max(sol_omn_fixed_pulse_grid), find_time_hit_res_max(sol_omn_responsive_pulse_grid)]
 
     # Measure of Overshoot
@@ -116,23 +113,9 @@ let
     resource_mm = min_max(1, t_end)
     consumer_mm = min_max(2, t_end)
     predator_mm = min_max(3, t_end)
-    #Min max
-    # g1mm = [
-    #     maximum(sol_chain_grid[1, :]) - minimum(sol_chain_grid[1, :]),
-    #     maximum(sol_omn_fixed_grid[1, :]) - minimum(sol_omn_fixed_grid[1, :]),
-    #     maximum(sol_omn_responsive_grid[1, :]) - minimum(sol_omn_responsive_grid[1, :])
-    # ]
-    # g2mm = [
-    #     maximum(sol_chain_grid[2, :]) - minimum(sol_chain_grid[2, :]),
-    #     maximum(sol_omn_fixed_grid[2, :]) - minimum(sol_omn_fixed_grid[2, :]),
-    #     maximum(sol_omn_responsive_grid[2, :]) - minimum(sol_omn_responsive_grid[2, :])
-    # ]
-    # g3mm = [
-    #     maximum(sol_chain_grid[3, :]) - minimum(sol_chain_grid[3, :]),
-    #     maximum(sol_omn_fixed_grid[3, :]) - minimum(sol_omn_fixed_grid[3, :]),
-    #     maximum(sol_omn_responsive_grid[3, :]) - minimum(sol_omn_responsive_grid[3, :])
-    # ]
 
+
+    # FIGURE
     # Layout
     fig = figure(figsize = (8, 9))
     R_col = "#1f77b4"

@@ -2,9 +2,6 @@ using Parameters: @with_kw, @unpack
 using LinearAlgebra: eigvals
 using ForwardDiff
 
-# # Forcing Functions
-force(u, p, t) = p.A * sin(2 * π * t / p.B + p.𝛗 * π)
-
 # # Omnivory preference functions
 function adapt_pref(u, p, t)
     return p.ω * u[1] / (p.ω * u[1] + (1 - p.ω) * u[2])
@@ -19,21 +16,21 @@ end
     # Logistic Parameters
     r = 2.0
     ## `K_base` measures the underyling K outside of any forcing applied
-    K_base = 3.0
-    K = 3.0
+    K_base = 3
+    K = 3
     # Consumer Parameters
-    a_RC = 1.0
-    h_RC = 1.0
-    e_RC = 0.7
+    a_RC = 1
+    h_RC = 0.4
+    e_RC = 0.8
     m_C = 0.4
     # Predator Parameters
-    a_CP = 0.25 #0.8
-    h_CP = 0.6
+    a_CP = 0.5
+    h_CP = 0.3
     e_CP = 0.6
     m_P = 0.2
     # Omnivory Parameters
-    a_RP = 0.1
-    h_RP = 0.4
+    a_RP = 0.2
+    h_RP = 0.6
     e_RP = 0.4
     Ω = 0.1
     # Forcing Function
@@ -41,6 +38,8 @@ end
     ## Used in the adaptive forcing to bias towards C or R
     ω = 0.5
 end
+
+
 
 #NOTE: we could use these in the model, but I am scared of all the function call
 #      overhead, likely could be fixed with inlining, but will just leave it for now
@@ -99,9 +98,13 @@ cmat(u, p) = ForwardDiff.jacobian(x -> rhs(x, p), u)
 λ1_stability(M) = maximum(real.(eigvals(M)))
 
 """M is the community matrix, we can be calculated with `cmat(u, p)`"""
-λ1_stability_imag(M) = imag.(eigvals(M))[sortperm(real.(eigvals(M)))[1]]
+function λ1_stability_imag(M) 
+    ev = eigvals(M)
+    imag.(ev)[findall(real.(ev) .== maximum(real.(ev)))[1]]
+end 
+    
 
 """M is the community matrix, we can be calculated with `cmat(u, p)`
-Note: `\nu` is the what to input `ν` which looks a bit to much like `v` for my taste
+Note: `\nu` is the what to input `ν` which looks a bit too much like `v` for my taste
 """
 ν_stability(M) = λ1_stability((M + M') / 2)

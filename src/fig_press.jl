@@ -3,13 +3,13 @@ using DifferentialEquations, NLsolve, QuadGK, PyPlot
 
 # Press
 press_start = 300.0
-press_strength = 1.3
+press_strength = 1.2
 
 press_event(u, t, integrator) = t ∈ press_start
 
 function forcing_press!(integrator)
     if integrator.t == press_start
-        integrator.p.K = press_strength * integrator.p.K_base
+        integrator.p.K = press_strength + integrator.p.K_base
     end
     return
 end
@@ -33,7 +33,6 @@ end
 
 
 let
-    
     u0 = [1.0, 1.5, 1.5]
     t_end = 900
     t_span = (0.0, t_end)
@@ -49,7 +48,7 @@ let
     # ODE 
     ## FOOD CHAIN
     par_chain = ModelPar(Ω = 0.0)
-    par_chain_afterpress = ModelPar(K = 3.0 * press_strength, Ω = 0.0)
+    par_chain_afterpress = ModelPar(K = par_chain.K + press_strength, Ω = 0.0)
 
     prob_chain_press = ODEProblem(model!, u0, t_span, deepcopy(par_chain), tstops = press_start)
     sol_chain_press = solve(prob_chain_press, reltol = 1e-8, abstol = 1e-8, callback = cb_press)
@@ -58,7 +57,7 @@ let
 
     ## PASSIVE OMNIVORY
     par_omn_fixed = ModelPar(Ω = Ω, pref = fixed_pref)
-    par_omn_fixed_afterpress = ModelPar(K = 3.0 * press_strength, Ω = Ω, pref = fixed_pref)
+    par_omn_fixed_afterpress = ModelPar(K = par_omn_fixed.K + press_strength, Ω = Ω, pref = fixed_pref)
 
     prob_omn_fixed_press = ODEProblem(model!, u0, t_span, deepcopy(par_omn_fixed), tstops = press_start)
     sol_omn_fixed_press = solve(prob_omn_fixed_press, reltol = 1e-8, abstol = 1e-8, callback = cb_press)
@@ -77,7 +76,7 @@ let
     ## Solving for ω we have `ω = Ω * C^* / (Ω * C^* + (1 - Ω) * R^*)`
     ω = Ω * eq[2] / (Ω * eq[2] + (1 - Ω) * eq[1])
     par_omn_responsive = ModelPar(Ω = Ω, ω = ω, pref = adapt_pref)
-    par_omn_responsive_afterpress = ModelPar(K = 3.0 * press_strength, Ω = Ω, ω = ω, pref = adapt_pref)
+    par_omn_responsive_afterpress = ModelPar(K = par_omn_responsive.K + press_strength, Ω = Ω, ω = ω, pref = adapt_pref)
 
     prob_omn_responsive_press = ODEProblem(model!, u0, t_span, deepcopy(par_omn_responsive), tstops = press_start)
     sol_omn_responsive_press = solve(prob_omn_responsive_press, reltol = 1e-8, abstol = 1e-8, callback = cb_press)
