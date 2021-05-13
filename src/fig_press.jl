@@ -146,7 +146,7 @@ let
         maximum([degree_omnivory(sol[:,i], par_omn_fixed) for i in 1:size(sol)[2]])
     )
     ### OmT
-    sol = sol_omn_fixed_press(310:0.01:880)
+    sol = sol_omn_fixed_press(310:0.01:550)
     println(
         "Fixed - Transient: ", 
         maximum([degree_omnivory(sol[:,i], par_omn_fixed) for i in 1:size(sol)[2]])
@@ -172,13 +172,13 @@ let
         maximum([degree_omnivory(sol[:,i], par_omn_responsive) for i in 1:size(sol)[2]])
     )
     ### OmT
-    sol = sol_omn_responsive_press(310:0.01:750)
+    sol = sol_omn_responsive_press(310:0.01:360)
     println(
         "Responsive - Transient: ", 
         maximum([degree_omnivory(sol[:,i], par_omn_responsive) for i in 1:size(sol)[2]])
     )
     ### OmEq
-    sol = sol_omn_responsive_press(750:0.01:900)
+    sol = sol_omn_responsive_press(880:0.01:900)
     println(
         "Responsive - New Equilibrium: ", 
         maximum([degree_omnivory(sol[:,i], par_omn_responsive) for i in 1:size(sol)[2]])

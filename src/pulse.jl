@@ -126,6 +126,7 @@ function pulse(K, a, e, m)
     push!(
         [],
         [chain_λ1, omn_fixed_λ1, omn_responsive_λ1],
+        [-1 ./ chain_λ1, -1 ./ omn_fixed_λ1, -1 ./ omn_responsive_λ1],
         [chain_λ1_imag, omn_fixed_λ1_imag, omn_responsive_λ1_imag],
         [chain_react, omn_fixed_react, omn_responsive_react],
         resource_OS,

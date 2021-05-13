@@ -3,13 +3,7 @@ include("pulse.jl")
 using DifferentialEquations, NLsolve, QuadGK, PyPlot
 pygui(true)
 
-# Resource Pulse/Masting Events
-# We model the situation where we have a relatively low
-# productivity environment, but we have period high productivity pulses,
-# like a oak mastings etc.
-# Objectives are that we can see a response of omnivory in the face of this
-# variable productivity situation, and test that we are measuring omnivory
-# in a way that is enlightening.
+# See fig_pulse for futher details
 global pulse_length = 2.0
 global pulse_start = 200
 global pulse_end = pulse_start + pulse_length
@@ -72,7 +66,7 @@ let
     # range of K
     println("Simulations for a range of K values")
     res_K = []
-    rg_K = 1.1:0.05:4
+    rg_K = 1.15:0.05:4
     for k in rg_K
         res_K = push!(res_K, pulse(k, 0.5, 0.6, 0.2))
     end 
@@ -105,40 +99,40 @@ let
     
     println("Drawing Figure S1")
     
-    fig = figure(figsize = (14, 9))
-    ind = [1 2 6 9]
+    fig = figure(figsize = (11, 6))
+    ind = [2 7 10]
     
     ##----------- K
-    tly = ["Re(λ1)" "Im(λ1)" "Degree of Overshoot" "Max-Min"]
-    tlx = ["" "" "" "K"]
-    for i in 1:4
-        subplot(4, 4, (i - 1) * 4 + 1)
+    tly = ["-1/Re(λ1)" "Degree of Overshoot" "Max-Min"]
+    tlx = ["" "" "K"]
+    for i in 1:3
+        subplot(3, 4, (i - 1) * 4 + 1)
         plot_unit(rg_K, res_K, ind[i], false, tlx[i], tly[i])
     end 
     
     ##----------- aCP
-    tlx = ["" "" "" "aCP"]
-    for i in 1:4
-        subplot(4, 4, (i-1)*4 + 2)
+    tlx = ["" "" "aCP"]
+    for i in 1:3
+        subplot(3, 4, (i-1) * 4 + 2)
         plot_unit(rg_aCP, res_aCP, ind[i], false, tlx[i], "")
     end 
 
     ##----------- eCP
-    tlx = ["" "" "" "eCP"]
-    for i in 1:4
-        subplot(4, 4, (i-1)*4 + 3)
+    tlx = ["" "" "eCP"]
+    for i in 1:3
+        subplot(3, 4, (i-1) * 4 + 3)
         plot_unit(rg_eCP, res_eCP, ind[i], false, tlx[i], "")
     end 
 
     ##----------- mP
-    tlx = ["" "" "" "mP"]
-    for i in 1:4
-        subplot(4, 4, (i-1)*4 + 4)
+    tlx = ["" "" "mP"]
+    for i in 1:3
+        subplot(3, 4, (i-1) * 4 + 4)
         plot_unit(rg_mP, res_mP, ind[i], true, tlx[i], "")
     end 
 
     tight_layout()
-    savefig("figs/figS1_plus.svg")
+    savefig("figs/figS1.svg")
 
     
 end    
