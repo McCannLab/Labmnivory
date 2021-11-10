@@ -33,7 +33,7 @@ function find_times_hit_equil(data)
     times = zeros(3)
     for animal in 1:3
         for i in 20:length(data)
-            if isapprox(data[animal,i],eq[animal], atol = 0.001)
+            if isapprox(data[animal,i],eq[animal], atol = 0.05)
                 times[animal] = data.t[i]
                 break
             end
@@ -120,10 +120,11 @@ let
 
     #Calculate max-min metric
     function min_max(animal, t_end)
-        return [maximum(sol_chain_press(range(chain_press_hit_equil[animal], t_end, length = 10000))[animal,:]) - minimum(sol_chain_press(range(chain_press_hit_equil[animal], t_end, length = 10000))[animal,:]),
+        return [
+        maximum(sol_chain_press(range(chain_press_hit_equil[animal], t_end, length = 10000))[animal,:]) - minimum(sol_chain_press(range(chain_press_hit_equil[animal], t_end, length = 10000))[animal,:]),
         maximum(sol_omn_fixed_press(range(fixed_press_hit_equil[animal], t_end, length = 10000))[animal,:]) - minimum(sol_omn_fixed_press(range(fixed_press_hit_equil[animal], t_end, length = 10000))[animal,:]),
         maximum(sol_omn_responsive_press(range(responsive_press_hit_equil[animal], t_end, length = 10000))[animal,:]) - minimum(sol_omn_responsive_press(range(responsive_press_hit_equil[animal], t_end, length = 10000))[animal,:])
-            ]
+        ]
     end
 
     resource_mm = min_max(1, t_end)
@@ -283,7 +284,7 @@ let
     plt.legend()
 
     tight_layout()
-    savefig("figs/fig3B.svg")
+    savefig("figs/figS2B.svg")
     return fig
 
 end

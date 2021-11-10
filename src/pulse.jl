@@ -1,13 +1,12 @@
 function pulse(K, a, e, m)
     
-    # Paramters
+    # Parameters
     u0 = [1.0, 1.5, 1.5]
     t_end = 350
     t_span = (0.0, t_end)
     t_start = 175.0
     t_grid = range(pulse_end, t_end, length = 10000)
     t_after = range(pulse_end, t_end, length = 10000)
-
     Ω = 0.1
     
     function find_time_hit_res_max(data)
@@ -15,7 +14,7 @@ function pulse(K, a, e, m)
         return data.t[max_res[2]]
     end
     
-    # ODEz
+    # ODE
     ## FOOD CHAIN
     par_chain = ModelPar(Ω = 0.0)
     par_chain.K_base = par_chain.K = K
