@@ -70,7 +70,7 @@ let
     for k in rg_K
         par = ModelPar()
         par.K_base = par.K = k
-        res_K = push!(res_K, pulse(par, 0.1, 0.5))
+        res_K = push!(res_K, pulse(par, 0.1, 2.0, 2.0))
     end 
     
     # range of a_CP
@@ -80,7 +80,7 @@ let
     for a in rg_aCP
         par = ModelPar()
         par.a_CP = a
-        res_aCP = push!(res_aCP, pulse(par, 0.1, 0.5))
+        res_aCP = push!(res_aCP, pulse(par, 0.1, 2.0, 2.0))
     end 
     
     # range of e_CP
@@ -90,7 +90,7 @@ let
     for e in rg_eCP
         par = ModelPar()
         par.e_CP = e
-        res_eCP = push!(res_eCP, pulse(par, 0.1, 0.5))
+        res_eCP = push!(res_eCP, pulse(par, 0.1, 2.0, 2.0))
     end 
     
     # range of m_P
@@ -100,7 +100,7 @@ let
     for m in rg_mP
         par = ModelPar()
         par.m_P = m
-        res_mP = push!(res_mP, pulse(par, 0.1, 0.5))
+        res_mP = push!(res_mP, pulse(par, 0.1, 2.0, 2.0))
     end 
     
     

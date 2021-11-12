@@ -1,19 +1,46 @@
 include("basic_omnivory_module.jl")
 include("press.jl")
-using DifferentialEquations, NLsolve, QuadGK, PyPlot
+using PyPlot
 
 
 let
     par = ModelPar()
     res = press(par, 0.1, 1.2)
-    #
-    function plot_illustration(sol, eq, ttl_id, leg = true, y_max = 5)
+    # check equilibria 
+    rgs = [
+        280:0.01:299,
+        300:0.01:310,
+        310:0.01:550,
+        880:0.01:900
+        ]
+    type = ["Fixed" "Responsive"]
+    phase = ["Equilibrium", "Pulse", "Transient", "New Equilibrium"]
+    # time: 2021-11-12 13:52:21 EST
+    # mode: julia
+    for i in 2:3
+        printstyled(type[i - 1], "---------\n", color = :green)
+        for j in eachindex(rgs)
+            printstyled(phase[j], " --> ", color = :blue)
+            # see press_unit output
+            sol = res[i][14](rgs[j])
+            println(
+                maximum(
+                    [degree_omnivory(
+                    sol[:, k], 
+                    res[i][13]
+                    ) for k in eachindex(sol)]
+                )
+            )
+        end
+    end
+    # plot helper
+    function plot_illustration(sol, eq, t_pr, ttl_id, leg = true, y_max = 5)
         RCP_cols = ["#1f77b4", "#ff7f0e", "#2ca02c"]
         labs = ["R", "C", "P"]
         ttls = ["Food Chain", "Passive Omnivory", "Responsive Omnivory"]
 
         for i in 1:3
-            hlines(eq[i], sol.t[1], sol.t[end], color = RCP_cols[i], alpha = 0.5)
+            hlines(eq[i], t_pr, sol.t[end], color = RCP_cols[i], alpha = 0.5)
         end 
         
         for i in 1:3
@@ -28,13 +55,12 @@ let
         ylim(0, y_max)
         title(ttls[ttl_id])
         ylabel("Density")
-        
     end 
-
     # Layout
     fig = figure(figsize = (8, 9))
     st_t = 220
     en_t = 900
+    t_pr = 300
     rg_t = st_t:0.1:en_t
     # Dynamics
     ## FC
@@ -42,6 +68,7 @@ let
     plot_illustration(
         res[1][14](rg_t),
         res[1][12],
+        t_pr,
         1
     )
     ## PO
@@ -49,6 +76,7 @@ let
     plot_illustration(
         res[2][14](rg_t),
         res[2][12],
+        t_pr,
         2
     )
     ## RO
@@ -56,6 +84,7 @@ let
     plot_illustration(
         res[3][14](rg_t),
         res[3][12],
+        t_pr,
         3
     )
     xlabel("Time")

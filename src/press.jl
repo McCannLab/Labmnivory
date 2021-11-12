@@ -1,3 +1,5 @@
+using DifferentialEquations, NLsolve
+
 function press_unit(par, p_strength) 
     # Parameters
     u0 = [1.0, 1.5, 1.5]
