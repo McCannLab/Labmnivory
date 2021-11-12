@@ -1,6 +1,7 @@
 using Parameters: @with_kw, @unpack
 using LinearAlgebra: eigvals
 using ForwardDiff
+using QuadGK: quadgk
 
 # # Omnivory preference functions
 function adapt_pref(u, p, t)
@@ -11,8 +12,8 @@ function fixed_pref(u, p, t)
     return p.Ω
 end
 
-# # Parameters need to be defined after above functions so they can have defaults
-@with_kw mutable struct ModelPar{F <: Function}
+# Parameters need to be defined after above functions so they can have defaults
+@with_kw mutable struct ModelPar
     # Logistic Parameters
     r = 2.0
     ## `K_base` measures the underyling K outside of any forcing applied
@@ -34,7 +35,7 @@ end
     e_RP = 0.4
     Ω = 0.1
     # Forcing Function
-    pref::F = fixed_pref
+    pref::Function = fixed_pref
     ## Used in the adaptive forcing to bias towards C or R
     ω = 0.5
 end
@@ -108,3 +109,52 @@ end
 Note: `\nu` is the what to input `ν` which looks a bit too much like `v` for my taste
 """
 ν_stability(M) = λ1_stability((M + M') / 2)
+
+
+# overshoot and oscillation range
+
+abs_sol(sol, t, eq) = abs.(sol(t) .- eq)
+
+function overshoot(sol, eq, spc, t_beg, t_end)
+    return quadgk(t -> abs_sol(sol, t, eq)[spc], t_beg, t_end)[1]
+end
+
+# Calculate max-min metric
+function min_max(sol, spc, t_beg, t_end, len = 100000)
+    return maximum(sol(range(t_beg, t_end, length = len))[spc, :]) - 
+    minimum(sol(range(t_beg, t_end, length = len))[spc, :])
+end
+
+# find first time equilibrium is hit
+function find_times_hit_equil_press(res)
+    eq = res[1, end], res[2, end], res[3, end]
+    times = zeros(3)
+    for spc in 1:3
+        for i in 20:length(res)
+            # cannot be too strict here otherwise the value of the 
+            # first ht time varies a lort which will have serious 
+            # impact on min and max (overshoot too) leading to major oscillations lenth of the ts must be high enough too.
+            if isapprox(res[spc, i], eq[spc], atol = 0.01)
+                times[spc] = res.t[i]
+                break
+            end
+        end
+    end
+    return times
+end
+
+# Basic plot for Sensitivity analysis (well akin to sa)
+function plot_sa_unit(rg, res, id, leg = false, xlb = "", ylb = "")
+    cols = ["#000000" "#555555" "#cccccc"]
+    labs = ["FC" "PO" "RO"]
+    lty = ["solid" "dashed" "solid"]
+    for j in 1:3
+        plot(rg, [res[i][j][id] for i in eachindex(rg)], 
+            label = labs[j], color = cols[j], linestyle = lty[j])
+    end 
+    if leg 
+        legend()
+    end 
+    xlabel(xlb)
+    ylabel(ylb)
+end 
