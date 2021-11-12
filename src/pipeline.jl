@@ -12,6 +12,10 @@ include("fig_press.jl")
 ## have been made to them (e.g. background color) using Inkscape. 
 
 
-# Figure S1
-printstyled("Runing simulations for FigS1\n", color = :blue)
-include("fig_S1.jl")
+# Figure S1 takes ~40min
+# printstyled("Runing simulations for FigS1\n", color = :blue)
+# include("fig_S1.jl")
+
+# Figue S2 takes ~40min
+# printstyled("Runing simulations for FigS1\n", color = :blue)
+# include("fig_S2.jl")
