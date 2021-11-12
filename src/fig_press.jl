@@ -5,6 +5,7 @@ using PyPlot
 
 let
     par = ModelPar()
+    # par = ModelPar(e_CP = 0.5, e_RC = 0.5, e_RP = 0.5)
     res = press(par, 0.1, 1.2)
     # check equilibria 
     rgs = [
@@ -125,7 +126,8 @@ let
     plt.legend()
 
     tight_layout()
-    savefig("figs/fig3_v3.svg")
+    savefig("figs/fig3b.svg")
+    # savefig("figs/fig13b.svg")
     
     return fig
 

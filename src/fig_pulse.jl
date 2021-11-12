@@ -6,14 +6,15 @@ pygui(true)
 
 let
     # simulation
+    # par = ModelPar(e_CP = 0.5, e_RC = 0.5, e_RP = 0.5)
     par = ModelPar()
     res = pulse(par, 0.1, 2.0, 2.0)
-    # check equilibria 
+    # check equilibria (NB the par should affetc the 2 last ranges if going back to equilibrium takes more time)
     rgs = [
-        280:0.01:299,
-        300:0.01:310,
-        310:0.01:550,
-        880:0.01:900
+        180:0.01:199,
+        200:0.01:205,
+        205:0.01:325,
+        325:0.01:350
         ]
     type = ["Fixed" "Responsive"]
     phase = ["Equilibrium", "Pulse", "Transient", "New Equilibrium"]
@@ -123,7 +124,8 @@ let
     plt.legend()
 
     tight_layout()
-    savefig("figs/fig3b_v3.svg")
+    # savefig("figs/figS1a.svg")
+    savefig("figs/fig3a.svg")
     
     return fig
 
