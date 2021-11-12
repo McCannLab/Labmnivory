@@ -79,6 +79,7 @@ function press_unit(par, p_strength)
         resource_mm,  
         eq_befor, 
         eq_after, 
+        par,
         sol
     )
     

@@ -119,6 +119,7 @@ function overshoot(sol, eq, spc, t_beg, t_end)
     return quadgk(t -> abs_sol(sol, t, eq)[spc], t_beg, t_end)[1]
 end
 
+
 # Calculate max-min metric
 function min_max(sol, spc, t_beg, t_end, len = 100000)
     return maximum(sol(range(t_beg, t_end, length = len))[spc, :]) - 
