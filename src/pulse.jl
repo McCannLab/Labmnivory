@@ -25,6 +25,7 @@ function pulse_unit(par, p_length, p_strength)
     # NB: for pulse p_strength is a multiplicator
     function forcing_pulse!(integrator)
         if integrator.t == pulse_start
+            # multiplication for pulse
             integrator.p.K = p_strength * integrator.p.K_base
         elseif integrator.t == pulse_end
             integrator.p.K = integrator.p.K_base

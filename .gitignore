@@ -1,6 +1,7 @@
 #
 figs*/*.svg
 src/figs
+src/res
 *.zip
 old
 *.png

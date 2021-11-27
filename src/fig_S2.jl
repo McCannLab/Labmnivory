@@ -1,6 +1,6 @@
 include("basic_omnivory_module.jl")
 include("press.jl")
-using DifferentialEquations, NLsolve, PyPlot
+using PyPlot
 pygui(true)
 
 
@@ -50,7 +50,7 @@ let
     # FIGURE
     println("Drawing Figure S2")
     
-    fig = figure(figsize = (11, 6))
+    fig = figure(figsize = (6, 4))
     ind = [2 5 8]
     
     ##----------- K
@@ -62,21 +62,21 @@ let
     end 
     
     ##----------- aCP
-    tlx = ["" "" "aCP"]
+    tlx = ["" "" L"a_{CP}"]
     for i in 1:3
         subplot(3, 4, (i-1) * 4 + 2)
         plot_sa_unit(rg_aCP, res_aCP, ind[i], false, tlx[i], "")
     end 
 
     ##----------- eCP
-    tlx = ["" "" "eCP"]
+    tlx = ["" "" L"e_{CP}"]
     for i in 1:3
         subplot(3, 4, (i-1) * 4 + 3)
         plot_sa_unit(rg_eCP, res_eCP, ind[i], false, tlx[i], "")
     end 
 
     ##----------- mP
-    tlx = ["" "" "mP"]
+    tlx = ["" "" L"m_P"]
     for i in 1:3
         subplot(3, 4, (i-1) * 4 + 4)
         plot_sa_unit(rg_mP, res_mP, ind[i], i == 1, tlx[i], "")

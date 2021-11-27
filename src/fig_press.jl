@@ -5,6 +5,7 @@ using PyPlot
 
 let
     par = ModelPar()
+    # for FigS4, use
     # par = ModelPar(e_CP = 0.5, e_RC = 0.5, e_RP = 0.5)
     res = press(par, 0.1, 1.2)
     # check equilibria 
@@ -38,7 +39,7 @@ let
     function plot_illustration(sol, eq, t_pr, ttl_id, leg = true, y_max = 5)
         RCP_cols = ["#1f77b4", "#ff7f0e", "#2ca02c"]
         labs = ["R", "C", "P"]
-        ttls = ["Food Chain", "Passive Omnivory", "Responsive Omnivory"]
+        ttls = ["Food Chain", "Passive Omnivory", "Active Omnivory"]
 
         for i in 1:3
             hlines(eq[i], t_pr, sol.t[end], color = RCP_cols[i], alpha = 0.5)

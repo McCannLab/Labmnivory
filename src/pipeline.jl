@@ -15,10 +15,10 @@ include("fig_press.jl")
 # Figure S1
 # Simply use the other set of paramters
 
-# Figure S2 takes ~40min
+# Figure S2 takes ~2hours
 # printstyled("Runing simulations for FigS1\n", color = :blue)
 # include("fig_S1.jl")
 
-# Figue S3 takes ~40min
+# Figue S3 takes ~2hours
 # printstyled("Runing simulations for FigS1\n", color = :blue)
 # include("fig_S2.jl")

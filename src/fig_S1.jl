@@ -1,68 +1,12 @@
 include("basic_omnivory_module.jl")
 include("pulse.jl")
-using DifferentialEquations, NLsolve, QuadGK, PyPlot
+using PyPlot
 pygui(true)
 
-# See fig_pulse for futher details
-# global pulse_length = 2.0
-# global pulse_start = 200
-# global pulse_end = pulse_start + pulse_length
-# global pulse_event_times = union(pulse_start, pulse_end)
-# global pulse_strength = 2.0
-# 
-# 
-# pulse_event(u, t, integrator) = t ∈ pulse_event_times
-# 
-# function forcing!(integrator)
-#     if integrator.t == pulse_start
-#         integrator.p.K = pulse_strength + integrator.p.K_base
-#     elseif integrator.t == pulse_end
-#         integrator.p.K = integrator.p.K_base
-#     end
-#     return
-# end
-# 
-# cb = DiscreteCallback(pulse_event, forcing!)
-# 
-# function find_times_hit_equil(data)
-#     eq = data[1, end], data[2, end], data[3, end]
-#     times = zeros(3)
-#     for animal in 1:3
-#         for i in eachindex(data)
-#             if isapprox(data[animal,i], eq[animal], atol = 0.001)
-#                 times[animal] = data.t[i]
-#                 break
-#             end
-#         end
-#     end
-#     return times
-# end
-
-# function plot_unit(rg, res, id, leg = false, xlb = "", ylb = "")
-#     cols = ["#000000" "#555555" "#cccccc"]
-#     labs = ["FC" "P" "R"]
-#     lty = ["solid" "dashed" "solid"]
-#     for j in 1:3
-#         plot(rg, [res[i][id][j] for i in eachindex(rg)], 
-#             label = labs[j], color = cols[j], linestyle = lty[j])
-#     end 
-#     if leg 
-#         legend()
-#     end 
-#     xlabel(xlb)
-#     ylabel(ylb)
-# end 
 
 
 let
 
-    # NB: `pulse()` returns :
-    # 1: real part of first eigen value, and 
-    # 2: imaginary part of first eigen value
-    # 3: reactivity 
-    # 4-6: degree of overshoot
-    # 7-9: max-min
-    
     # range of K
     println("Simulations for a range of K values")
     res_K = []
@@ -103,11 +47,21 @@ let
         res_mP = push!(res_mP, pulse(par, 0.1, 2.0, 2.0))
     end 
     
+    # save takes ~500Mo
+    # using FileIO, JLD2
+    # mkdir("res")
+    # save(
+    #     "res/res_S1.jld2", 
+    #     "rg_K", rg_K, "res_K", res_K,
+    #     "rg_aCP", rg_aCP, "res_aCP", res_aCP,
+    #     "rg_eCP", rg_eCP, "res_eCP", res_eCP,
+    #     "rg_mP", rg_mP, "res_mP", res_mP
+    #     )
     
     
     println("Drawing Figure S1")
     
-    fig = figure(figsize = (11, 6))
+    fig = figure(figsize = (12, 8))
     ind = [2 5 8]
     
     ##----------- K
@@ -119,28 +73,31 @@ let
     end 
     
     ##----------- aCP
-    tlx = ["" "" "aCP"]
+    tlx = ["" "" L"a_{CP}"]
     for i in 1:3
         subplot(3, 4, (i-1) * 4 + 2)
         plot_sa_unit(rg_aCP, res_aCP, ind[i], false, tlx[i], "")
     end 
 
     ##----------- eCP
-    tlx = ["" "" "eCP"]
+    tlx = ["" "" L"e_{CP}"]
     for i in 1:3
         subplot(3, 4, (i-1) * 4 + 3)
         plot_sa_unit(rg_eCP, res_eCP, ind[i], false, tlx[i], "")
     end 
 
     ##----------- mP
-    tlx = ["" "" "mP"]
+    tlx = ["" "" L"m_P"]
     for i in 1:3
         subplot(3, 4, (i-1) * 4 + 4)
-        plot_sa_unit(rg_mP, res_mP, ind[i], i == 1, tlx[i], "")
+        plot_sa_unit_rev(rg_mP, res_mP, ind[i], i == 1, tlx[i], "")
+        val = [0.15, 0.20, 0.25, 0.30]
+        xticks(val, reverse(val))
     end 
-
+    
+    
     tight_layout()
-    savefig("figs/figS1_v2.svg")
+    savefig("figs/figS1_v3.svg")
 
     
 end    

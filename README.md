@@ -4,7 +4,6 @@
 
 ## Installation
 
-
 Simulation are implemented in [Julia](https://julialang.org/), a recent version of Julia is thus  required to reproduce this analysis (note that the 
 code is only tested for Julia v1.6.0) along with the following packages (note that they can be installed using `src/install_packages.jl` in this repository, see below):
 

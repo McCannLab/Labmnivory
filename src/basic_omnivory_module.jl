@@ -145,13 +145,33 @@ function find_times_hit_equil_press(res)
 end
 
 # Basic plot for Sensitivity analysis (well akin to sa)
-function plot_sa_unit(rg, res, id, leg = false, xlb = "", ylb = "")
+function plot_sa_unit(rg, res, id, leg = false, xlb = "", ylb = "", ann = 1)
+    # az = 'a':'z'
     cols = ["#000000" "#555555" "#cccccc"]
     labs = ["FC" "PO" "RO"]
     lty = ["solid" "dashed" "solid"]
     for j in 1:3
         plot(rg, [res[i][j][id] for i in eachindex(rg)], 
             label = labs[j], color = cols[j], linestyle = lty[j])
+    end 
+    if leg 
+        legend()
+    end 
+    xlabel(xlb)
+    ylabel(ylb)
+    # did not work
+    # annotate(string(az[ann]), [.1;.1], xycoords="figure fraction", 
+    #     annotation_clip = false)
+end 
+
+# Basic plot for Sensitivity analysis (well akin to sa)
+function plot_sa_unit_rev(rg, res, id, leg = false, xlb = "", ylb = "")
+    # az = 'a':'z'
+    cols = ["#000000" "#555555" "#cccccc"]
+    labs = ["FC" "PO" "RO"]
+    lty = ["solid" "dashed" "solid"]
+    for j in 1:3
+        plot(rg, [res[i][j][id] for i in reverse(eachindex(rg))], label = labs[j], color = cols[j], linestyle = lty[j])
     end 
     if leg 
         legend()
