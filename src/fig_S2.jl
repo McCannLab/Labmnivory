@@ -46,6 +46,17 @@ let
         res_mP = push!(res_mP, press(par, 0.1, 0.5))
     end 
     
+    # # save takes ~500Mo
+    # using FileIO, JLD2
+    # # mkdir("res")
+    # save(
+    #     "res/res_S2.jld2", 
+    #     "rg_K", rg_K, "res_K", res_K,
+    #     "rg_aCP", rg_aCP, "res_aCP", res_aCP,
+    #     "rg_eCP", rg_eCP, "res_eCP", res_eCP,
+    #     "rg_mP", rg_mP, "res_mP", res_mP
+    #     )
+    
     
     # FIGURE
     println("Drawing Figure S2")
@@ -79,11 +90,13 @@ let
     tlx = ["" "" L"m_P"]
     for i in 1:3
         subplot(3, 4, (i-1) * 4 + 4)
-        plot_sa_unit(rg_mP, res_mP, ind[i], i == 1, tlx[i], "")
+        plot_sa_unit_rev(rg_mP, res_mP, ind[i], i == 1, tlx[i], "")
+        val = [0.15, 0.20, 0.25, 0.30]
+        xticks(val, reverse(val))
     end 
 
     tight_layout()
-    savefig("figs/figS2b.svg")
+    savefig("figs/figS2_v3.svg")
 
 end    
     
