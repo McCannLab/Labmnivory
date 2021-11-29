@@ -4,8 +4,7 @@
 
 ## Installation
 
-Simulation are implemented in [Julia](https://julialang.org/), a recent version of Julia is thus  required to reproduce this analysis (note that the 
-code is only tested for Julia v1.6.0) along with the following packages (note that they can be installed using `src/install_packages.jl` in this repository, see below):
+Simulation are implemented in [Julia](https://julialang.org/), a recent version of Julia is required to reproduce this analysis (note that the code was only tested for Julia v1.6.0) along with the following packages (note that they can be installed using `src/install_packages.jl` in this repository, see below):
 
 |Package              | Links                                                  |
 |:--------------------|:-------------------------------------------------------|
@@ -18,6 +17,8 @@ code is only tested for Julia v1.6.0) along with the following packages (note th
 |QuadGK               | [repo](https://github.com/JuliaMath/QuadGK.jl)         |
 |RecursiveArrayTool   | [repo](https://github.com/SciML/RecursiveArrayTools.jl)|
 |Statistics           | [repo](https://docs.julialang.org/en/v1/stdlib/Statistics/)|
+|FileIO               | [repo](https://github.com/JuliaIO/FileIO.jl)           |
+|JLD2                 | [repo](https://github.com/JuliaIO/JLD2.jl)             |
 
 
 Then, clone this repository using [git](https://git-scm.com/):
@@ -36,11 +37,11 @@ julia src/install_packages.jl
 You should now be ready to reproduce the analysis.
 
 
-## Repo structure 
+## Structure of this repository
 
 - `src`: source code 
-- `figs`: folder where figures are exported
-
+- `src/figs`: folder where figures are exported
+- `gigs/final`: final figure (after ediation with [Inkscape](https://inkscape.org/))
 
 
 ## How to reproduce the analysis 
