@@ -27,15 +27,15 @@
      showgrid="false"
      units="in"
      width="6in"
-     inkscape:zoom="3.0137856"
-     inkscape:cx="160.59537"
-     inkscape:cy="192.44899"
+     inkscape:zoom="10.199583"
+     inkscape:cx="383.64315"
+     inkscape:cy="46.080317"
      inkscape:window-width="3840"
      inkscape:window-height="2084"
      inkscape:window-x="0"
      inkscape:window-y="39"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g14173" />
+     inkscape:current-layer="legend_1" />
   <metadata
      id="metadata2">
     <rdf:RDF>
@@ -1911,14 +1911,7 @@
     </g>
     <g
        id="legend_1"
-       transform="matrix(1.1557713,0,0,1.1557713,-106.42867,-2.3833015)">
-      <g
-         id="patch_52">
-        <path
-           d="m 685.73652,62.834375 h 46.82031 q 2,0 2,-2 V 17.8 q 0,-2 -2,-2 h -46.82031 q -2,0 -2,2 v 43.034375 q 0,2 2,2 z"
-           style="opacity:0.8;fill:#ffffff;stroke:#cccccc;stroke-linejoin:miter"
-           id="path1686" />
-      </g>
+       transform="matrix(1.0624304,0,0,1.0624304,-45.411474,-3.6254198)">
       <g
          id="line2d_119">
         <path
@@ -1929,39 +1922,6 @@
       <g
          id="line2d_120" />
       <g
-         id="text_95">
-        <!-- FC -->
-        <g
-           transform="matrix(0.1,0,0,-0.1,715.73652,27.398438)"
-           id="g1701">
-          <defs
-             id="defs1695">
-            <path
-               d="M 628,4666 H 3309 V 4134 H 1259 V 2759 H 3109 V 2228 H 1259 V 0 H 628 Z"
-               id="DejaVuSans-46"
-               transform="scale(0.015625)" />
-            <path
-               d="m 4122,4306 v -665 q -319,297 -680,443 -361,147 -767,147 -800,0 -1225,-489 -425,-489 -425,-1414 0,-922 425,-1411 425,-489 1225,-489 406,0 767,147 361,147 680,444 V 359 Q 3791,134 3420,21 3050,-91 2638,-91 1578,-91 968,557 359,1206 359,2328 q 0,1125 609,1773 610,649 1670,649 418,0 788,-111 371,-111 696,-333 z"
-               id="DejaVuSans-43"
-               transform="scale(0.015625)" />
-          </defs>
-          <use
-             xlink:href="#DejaVuSans-46"
-             id="use1697"
-             x="0"
-             y="0"
-             width="100%"
-             height="100%" />
-          <use
-             x="57.519531"
-             xlink:href="#DejaVuSans-43"
-             id="use1699"
-             y="0"
-             width="100%"
-             height="100%" />
-        </g>
-      </g>
-      <g
          id="line2d_121">
         <path
            d="m 687.73652,38.576563 h 20"
@@ -1971,35 +1931,6 @@
       <g
          id="line2d_122" />
       <g
-         id="text_96">
-        <!-- PO -->
-        <g
-           transform="matrix(0.1,0,0,-0.1,715.73652,42.076563)"
-           id="g1715">
-          <defs
-             id="defs1709">
-            <path
-               d="M 1259,4147 V 2394 h 794 q 441,0 681,228 241,228 241,650 0,419 -241,647 -240,228 -681,228 z m -631,519 h 1425 q 785,0 1186,-355 402,-355 402,-1039 0,-691 -402,-1044 -401,-353 -1186,-353 H 1259 V 0 H 628 Z"
-               id="DejaVuSans-50"
-               transform="scale(0.015625)" />
-          </defs>
-          <use
-             xlink:href="#DejaVuSans-50"
-             id="use1711"
-             x="0"
-             y="0"
-             width="100%"
-             height="100%" />
-          <use
-             x="60.302734"
-             xlink:href="#DejaVuSans-4f"
-             id="use1713"
-             y="0"
-             width="100%"
-             height="100%" />
-        </g>
-      </g>
-      <g
          id="line2d_123">
         <path
            d="m 687.73652,53.254688 h 20"
@@ -2008,28 +1939,43 @@
       </g>
       <g
          id="line2d_124" />
-      <g
-         id="text_97">
-        <!-- RO -->
-        <g
-           transform="matrix(0.1,0,0,-0.1,715.73652,56.754688)"
-           id="g1726">
-          <use
-             xlink:href="#DejaVuSans-52"
-             id="use1722"
-             x="0"
-             y="0"
-             width="100%"
-             height="100%" />
-          <use
-             x="69.482422"
-             xlink:href="#DejaVuSans-4f"
-             id="use1724"
-             y="0"
-             width="100%"
-             height="100%" />
-        </g>
-      </g>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:58.4838px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.4621;stroke-linecap:butt;stroke-linejoin:round"
+         x="710.95856"
+         y="28.156233"
+         id="text4334"><tspan
+           sodipodi:role="line"
+           id="tspan4332"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11.6968px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:1.4621"
+           x="710.95856"
+           y="28.156233">FC</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:58.4838px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.4621;stroke-linecap:butt;stroke-linejoin:round"
+         x="711.44971"
+         y="41.747494"
+         id="text4334-0"><tspan
+           sodipodi:role="line"
+           id="tspan4332-1"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11.6968px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:1.4621"
+           x="711.44971"
+           y="41.747494">O<tspan
+   style="font-size:65%;baseline-shift:sub"
+   id="tspan6578">P</tspan></tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:58.4838px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.4621;stroke-linecap:butt;stroke-linejoin:round"
+         x="711.44971"
+         y="56.425617"
+         id="text4334-01"><tspan
+           sodipodi:role="line"
+           id="tspan4332-3"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11.6968px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:1.4621"
+           x="711.44971"
+           y="56.425617">O<tspan
+   style="font-size:65%;baseline-shift:sub"
+   id="tspan5334">A</tspan></tspan></text>
     </g>
   </g>
   <g

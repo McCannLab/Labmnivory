@@ -12,8 +12,8 @@ res = pulse(par, 0.1, 2.0, 2.0)
 # check equilibria (NB the par should affetc the 2 last ranges if going back to equilibrium takes more time)
 rgs = [
     180:0.01:199,
-    200:0.01:210,
-    210:0.01:325,
+    200:0.01:205,
+    205:0.01:325,
     325:0.01:350
     ]
 check_doo(res, rgs)

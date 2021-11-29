@@ -200,9 +200,9 @@ function check_doo(res, rgs)
                     ) for k in eachindex(sol)]
                 )
             )
-            # maximum degree of omnivory when the C is max (food web is top heavy)
+            # maximum degree of omnivory when the C is min (food web is top heavy)
             printstyled("where topheaviest --> ", color = :blue)
-            idmx = argmax([sol[3, k] for k in eachindex(sol)])
+            idmx = argmin([sol[2, k] for k in eachindex(sol)])
             # println(idmx)
             print(
                 degree_omnivory(

@@ -26,15 +26,15 @@
      inkscape:document-units="pt"
      showgrid="false"
      units="in"
-     inkscape:zoom="2.1120559"
-     inkscape:cx="277.92825"
-     inkscape:cy="275.56089"
-     inkscape:window-width="1920"
-     inkscape:window-height="1014"
+     inkscape:zoom="10.87545"
+     inkscape:cx="537.08123"
+     inkscape:cy="47.170462"
+     inkscape:window-width="3840"
+     inkscape:window-height="2084"
      inkscape:window-x="0"
-     inkscape:window-y="29"
+     inkscape:window-y="39"
      inkscape:window-maximized="1"
-     inkscape:current-layer="figure_1" />
+     inkscape:current-layer="axes_10" />
   <metadata
      id="metadata2">
     <rdf:RDF>
@@ -1961,16 +1961,10 @@
         </g>
         <g
            id="legend_1"
-           transform="matrix(1.2260963,0,0,1.2260963,-143.5524,-3.4573375)">
+           transform="matrix(1.2123464,0,0,1.2123464,-137.16384,-6.2501316)">
           <g
-             id="patch_52">
-            <path
-               d="m 686.55919,63.183191 h 46.82031 q 2,0 2,-2 V 18.148816 q 0,-2 -2,-2 h -46.82031 q -2,0 -2,2 v 43.034375 q 0,2 2,2 z"
-               style="opacity:0.8;fill:#ffffff;stroke:#cccccc;stroke-linejoin:miter"
-               id="path1686" />
-          </g>
-          <g
-             id="line2d_119">
+             id="line2d_119"
+             transform="matrix(0.8998412,0,0,0.8998412,68.890145,2.0357655)">
             <path
                d="m 688.55919,24.247253 h 20"
                style="fill:none;stroke:#000000;stroke-width:1.5;stroke-linecap:square"
@@ -1979,40 +1973,8 @@
           <g
              id="line2d_120" />
           <g
-             id="text_95">
-            <!-- FC -->
-            <g
-               transform="matrix(0.1,0,0,-0.1,716.55919,27.747253)"
-               id="g1701">
-              <defs
-                 id="defs1695">
-                <path
-                   d="M 628,4666 H 3309 V 4134 H 1259 V 2759 H 3109 V 2228 H 1259 V 0 H 628 Z"
-                   id="DejaVuSans-46"
-                   transform="scale(0.015625)" />
-                <path
-                   d="m 4122,4306 v -665 q -319,297 -680,443 -361,147 -767,147 -800,0 -1225,-489 -425,-489 -425,-1414 0,-922 425,-1411 425,-489 1225,-489 406,0 767,147 361,147 680,444 V 359 Q 3791,134 3420,21 3050,-91 2638,-91 1578,-91 968,557 359,1206 359,2328 q 0,1125 609,1773 610,649 1670,649 418,0 788,-111 371,-111 696,-333 z"
-                   id="DejaVuSans-43"
-                   transform="scale(0.015625)" />
-              </defs>
-              <use
-                 xlink:href="#DejaVuSans-46"
-                 id="use1697"
-                 x="0"
-                 y="0"
-                 width="100%"
-                 height="100%" />
-              <use
-                 x="57.519531"
-                 xlink:href="#DejaVuSans-43"
-                 id="use1699"
-                 y="0"
-                 width="100%"
-                 height="100%" />
-            </g>
-          </g>
-          <g
-             id="line2d_121">
+             id="line2d_121"
+             transform="matrix(0.8998412,0,0,0.8998412,68.890145,2.0357655)">
             <path
                d="m 688.55919,38.925378 h 20"
                style="fill:none;stroke:#555555;stroke-width:1.5;stroke-dasharray:5.55, 2.4;stroke-dashoffset:0"
@@ -2021,36 +1983,8 @@
           <g
              id="line2d_122" />
           <g
-             id="text_96">
-            <!-- PO -->
-            <g
-               transform="matrix(0.1,0,0,-0.1,716.55919,42.425378)"
-               id="g1715">
-              <defs
-                 id="defs1709">
-                <path
-                   d="M 1259,4147 V 2394 h 794 q 441,0 681,228 241,228 241,650 0,419 -241,647 -240,228 -681,228 z m -631,519 h 1425 q 785,0 1186,-355 402,-355 402,-1039 0,-691 -402,-1044 -401,-353 -1186,-353 H 1259 V 0 H 628 Z"
-                   id="DejaVuSans-50"
-                   transform="scale(0.015625)" />
-              </defs>
-              <use
-                 xlink:href="#DejaVuSans-50"
-                 id="use1711"
-                 x="0"
-                 y="0"
-                 width="100%"
-                 height="100%" />
-              <use
-                 x="60.302734"
-                 xlink:href="#DejaVuSans-4f"
-                 id="use1713"
-                 y="0"
-                 width="100%"
-                 height="100%" />
-            </g>
-          </g>
-          <g
-             id="line2d_123">
+             id="line2d_123"
+             transform="matrix(0.8998412,0,0,0.8998412,68.890145,2.0357655)">
             <path
                d="m 688.55919,53.603503 h 20"
                style="fill:none;stroke:#cccccc;stroke-width:1.5;stroke-linecap:square"
@@ -2058,28 +1992,43 @@
           </g>
           <g
              id="line2d_124" />
-          <g
-             id="text_97">
-            <!-- RO -->
-            <g
-               transform="matrix(0.1,0,0,-0.1,716.55919,57.103503)"
-               id="g1726">
-              <use
-                 xlink:href="#DejaVuSans-52"
-                 id="use1722"
-                 x="0"
-                 y="0"
-                 width="100%"
-                 height="100%" />
-              <use
-                 x="69.482422"
-                 xlink:href="#DejaVuSans-4f"
-                 id="use1724"
-                 y="0"
-                 width="100%"
-                 height="100%" />
-            </g>
-          </g>
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-weight:normal;font-size:50.057px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.25142;stroke-linecap:butt;stroke-linejoin:round"
+             x="711.59711"
+             y="27.49873"
+             id="text2580"><tspan
+               sodipodi:role="line"
+               id="tspan2578"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.0114px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:1.25142"
+               x="711.59711"
+               y="27.49873">FC</tspan></text>
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-weight:normal;font-size:50.057px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.25142;stroke-linecap:butt;stroke-linejoin:round"
+             x="712.01752"
+             y="39.776451"
+             id="text2580-0"><tspan
+               sodipodi:role="line"
+               id="tspan2578-6"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.0114px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:1.25142"
+               x="712.01752"
+               y="39.776451">O<tspan
+   style="font-size:65%;baseline-shift:sub"
+   id="tspan5279">P</tspan></tspan></text>
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-weight:normal;font-size:50.057px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.25142;stroke-linecap:butt;stroke-linejoin:round"
+             x="712.01752"
+             y="52.984432"
+             id="text2580-0-6"><tspan
+               sodipodi:role="line"
+               id="tspan2578-6-2"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.0114px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:1.25142"
+               x="712.01752"
+               y="52.984432">O<tspan
+   style="font-size:65%;baseline-shift:sub"
+   id="tspan8314">A</tspan></tspan></text>
         </g>
       </g>
     </g>
