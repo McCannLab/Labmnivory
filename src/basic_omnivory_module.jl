@@ -179,3 +179,39 @@ function plot_sa_unit_rev(rg, res, id, leg = false, xlb = "", ylb = "")
     xlabel(xlb)
     ylabel(ylb)
 end 
+
+
+# helper function to check out degree of omnivory
+function check_doo(res, rgs)
+    type = ["Fixed" "Responsive"]
+    phase = ["Equilibrium", "Pulse", "Transient", "New Equilibrium"]
+    # Check values of degree of omnivory
+    for i in 2:3
+        printstyled(type[i - 1], "---------\n", color = :green)
+        for j in eachindex(rgs)
+            printstyled(phase[j], " --> ", color = :blue)
+            # see press_unit output
+            sol = res[i][14](rgs[j])
+            println(
+                maximum(
+                    [degree_omnivory(
+                    sol[:, k], 
+                    res[i][13]
+                    ) for k in eachindex(sol)]
+                )
+            )
+            # maximum degree of omnivory when the C is max (food web is top heavy)
+            printstyled("where topheaviest --> ", color = :blue)
+            idmx = argmax([sol[3, k] for k in eachindex(sol)])
+            # println(idmx)
+            print(
+                degree_omnivory(
+                    sol[idmx], 
+                    res[i][13]
+                )
+            )
+            ti = rgs[j][idmx]
+            println("(time = $ti)")
+        end
+    end
+end
