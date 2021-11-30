@@ -41,7 +41,7 @@ You should now be ready to reproduce the analysis.
 
 - `src`: source code 
 - `src/figs`: folder where figures are exported
-- `gigs/final`: final figure (after ediation with [Inkscape](https://inkscape.org/))
+- `figs/final`: final figure (after ediation with [Inkscape](https://inkscape.org/))
 
 
 ## How to reproduce the analysis 
