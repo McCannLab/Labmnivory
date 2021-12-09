@@ -1,5 +1,5 @@
 # Here is the code to install packages. 
-# The list below is an example, none of the packages are actually required.
+# See readme 
 using Pkg
 Pkg.add(
     ["Parameters", "RecursiveArrayTools", "Statistics", "DifferentialEquations",

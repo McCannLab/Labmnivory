@@ -44,7 +44,8 @@ for m in rg_mP
     res_mP = push!(res_mP, pulse(par, 0.1, 2.0, 2.0))
 end 
 
-# save takes ~500Mo
+# As this takes some time to run you may want to save this (it takes ~500Mo), 
+# if so uncomment the lines below.
 # using FileIO, JLD2
 # mkdir("res")
 # save(

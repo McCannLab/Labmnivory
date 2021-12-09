@@ -45,7 +45,8 @@ for m in rg_mP
     res_mP = push!(res_mP, press(par, 0.1, 0.5))
 end 
 
-# # save takes ~500Mo
+# As this takes some time to run you may want to save this (it takes ~500Mo), 
+# if so uncomment the lines below.
 # using FileIO, JLD2
 # # mkdir("res")
 # save(
@@ -95,5 +96,5 @@ for i in 1:3
 end 
 
 tight_layout()
-savefig("figs/figS2_v3.svg")
+savefig("fig/fig_S2.svg")
 

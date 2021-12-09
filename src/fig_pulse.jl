@@ -4,10 +4,11 @@ using PyPlot
 pygui(true)
 
 
-# simulation
-# for FigS3, use
-# par = ModelPar(e_CP = 0.5, e_RC = 0.5, e_RP = 0.5)
+# PULSE SIMULATION
 par = ModelPar()
+# NB: for FigS3, use
+# par = ModelPar(e_CP = 0.5, e_RC = 0.5, e_RP = 0.5)
+# this returns all the results required for figure 3
 res = pulse(par, 0.1, 2.0, 2.0)
 # check equilibria (NB the par should affetc the 2 last ranges if going back to equilibrium takes more time)
 rgs = [
@@ -40,6 +41,7 @@ function plot_illustration(sol, eq, ttl_id, leg = true, y_max = 5)
     title(ttls[ttl_id])
     ylabel("Density")
 end 
+
 # Layout
 fig = figure(figsize = (8, 9))
 st_t = 175
@@ -105,9 +107,6 @@ ylabel("Max - Min")
 plt.legend()
 
 tight_layout()
-# savefig("figs/figS1a.svg")
-savefig("figs/fig3a.svg")
-
-return fig
-
+savefig("fig/fig_4.svg")
+# savefig("fig/fig_S3.svg")
 

@@ -2,9 +2,9 @@ include("basic_omnivory_module.jl")
 include("press.jl")
 using PyPlot
 
-
+# PRESS SIMULATION
 par = ModelPar()
-# for FigS4, use
+# NB: for FigS4, use
 # par = ModelPar(e_CP = 0.5, e_RC = 0.5, e_RP = 0.5)
 res = press(par, 0.1, 1.2)
 # check equilibria 
@@ -108,7 +108,5 @@ ylabel("Max - Min")
 plt.legend()
 
 tight_layout()
-savefig("figs/fig3b.svg")
-# savefig("figs/fig13b.svg")
-
-return fig
+savefig("fig/fig_3.svg")
+# savefig("fig/fig_S3.svg")
