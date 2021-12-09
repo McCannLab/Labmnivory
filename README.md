@@ -4,7 +4,7 @@
 
 ## Installation
 
-Simulation are implemented in [Julia](https://julialang.org/), a recent version of Julia is required to reproduce this analysis (note that the code was only tested for Julia v1.6.0) along with the following packages (note that they can be installed using `src/install_packages.jl` in this repository, see below):
+Simulations are implemented in [Julia](https://julialang.org/), a recent version of Julia is required to reproduce the analysis (note that the code was only tested for Julia v1.7.0) along with the following packages (note that they can be installed using `src/install_packages.jl` in this repository, see below):
 
 |Package              | Links                                                  |
 |:--------------------|:-------------------------------------------------------|
@@ -27,8 +27,7 @@ Then, clone this repository using [git](https://git-scm.com/):
 git clone https://github.com/McCannLab/Labmnivory.git
 ```
 
-or downloaded the [zip file](https://github.com/McCannLab/Labmnivory/archive/refs/heads/master.zip). If you haven't yet installed the packages, you can actually 
-use `src/install_packages.jl` in this repository. To do so, in a terminal, set your working directory at the root of the freshly cloned/downloaded repository, then use the following command line&nbsp;:
+or downloaded the [zip file](https://github.com/McCannLab/Labmnivory/archive/refs/heads/master.zip). If you haven't yet installed the packages, you can actually use `src/install_packages.jl` in this repository. To do so, in a terminal, set your working directory at the root of the freshly cloned/downloaded repository, then use the following command line&nbsp;:
 
 ```julia
 julia src/install_packages.jl
@@ -39,16 +38,37 @@ You should now be ready to reproduce the analysis.
 
 ## Structure of this repository
 
-- `src`: source code 
-- `src/figs`: folder where figures are exported
-- `figs/final`: final figure (after ediation with [Inkscape](https://inkscape.org/))
+## General structure
+
+- `src`: include source code.
+- `fig/`: where figures are exported to.
+- `fig/final`: final figures (after edition with [Inkscape](https://inkscape.org/)), available as SVG (`/svg/`) and EPS (`/eps/`).
 
 
-## How to reproduce the analysis 
+## Scripts (content of `/scr/`)
 
-In a terminal, assuming the working directory is set to be the the root of the freshly cloned/downloaded repository, use the following command line&nbsp;:
+- `install_packages.jl`: contains code to install packages required;
+- `basic_omnivory_module.jl`: includes all basic building blocs including the basic set of ODEs (`model!()`) and the functions to compute the different metrics (e.g. `overshoot()`);
+- `pulse.jl`: functions to run pulse analysis;
+- `press.jl`: functions to run press analysis;
+- `fig_press.jl`: script to create pulse figures (Figs. 3 (a-c), 4 (a-c), S3 (a-c), S4 (a-c));
+- `fig_pulse.jl`: script to create press figures (Figs. 3 (d-f), 4 (d-f), S3 (d-f), S4 (d-f));
+- `fig_S1.jl`: script to create figure S1;
+- `fig_S2.jl`: script to create figure S2.
+- `pipeline.jl`: orchestrate the different scripts to reproduce the analysis.
+
+
+## How to reproduce the analysis locally
+
+In a terminal, assuming the working directory is the root of the freshly cloned/downloaded repository, use the following command line to reproduce the analysis.
 
 ```julia
 julia src/pipeline.jl
 ```
+
+
+
+## Questions 
+
+Script have been commented for ease of comprehension but if you still have some questions regarding the numerical implementation, do not hesitate to open an issue.
 
