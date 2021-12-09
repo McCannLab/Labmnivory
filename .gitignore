@@ -1,6 +1,6 @@
 #
 figs*/*.svg
-src/figs
+src/figs/*.svg
 src/res
 *.zip
 old

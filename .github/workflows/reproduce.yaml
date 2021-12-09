@@ -12,7 +12,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        julia-version: ['v1.6.0']
+        julia-version: ['v1.7.0']
         os: [macOS-latest, windows-latest, ubuntu-latest]
       max-parallel: 1
 
@@ -25,14 +25,6 @@ jobs:
         uses: julia-actions/setup-julia@v1
         with:
           version: ${{ matrix.julia-version }}
-      - name: "Install packages"
-        run: julia -p 1 src/install_packages.jl
+      - name: "Run analysis"
+        run: julia -p 1 src/pipeline.jl
         shell: bash
-      # - name: "Press analysis"
-      #   run: julia -p 1 src/pipeline.jl
-      #   shell: bash
-      # - name: "Press analysis"
-      #   run: julia -p 1 julia src/fig_press.jl
-      # - name: "Pulse analysis"
-      #   run: julia -p 1 julia src/fig_pulse.jl
-  
