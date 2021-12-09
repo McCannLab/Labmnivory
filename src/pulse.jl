@@ -1,12 +1,7 @@
 # Simulation for pulse experiment
 using DifferentialEquations, NLsolve
 
-function find_time_hit_res_max(res)
-    max_res = findmax(res[1,:])
-    return res.t[max_res[2]]
-end
-
-
+# analysis for one pulse simulation (1 system)
 function pulse_unit(par, p_length, p_strength) 
     # Parameters   
     u0 = [1.0, 1.5, 1.5]

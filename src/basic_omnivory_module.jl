@@ -181,7 +181,7 @@ function plot_sa_unit_rev(rg, res, id, leg = false, xlb = "", ylb = "")
 end 
 
 
-# helper function to check out degree of omnivory
+# Helper function to check out degree of omnivory
 function check_doo(res, rgs)
     type = ["Fixed" "Responsive"]
     phase = ["Equilibrium", "Pulse", "Transient", "New Equilibrium"]

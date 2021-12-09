@@ -3,21 +3,35 @@ include("pulse.jl")
 using PyPlot
 pygui(true)
 
+# PULSE SIMULATIONS
+# returns dynamics and metrics in different panels, we actually dispatch the 
+# different pannels between figure 3 and 4 with Inkscape (we did the same
+# for figures S3 and S4).
 
-# PULSE SIMULATION
-par = ModelPar()
-# NB: for FigS3, use
-# par = ModelPar(e_CP = 0.5, e_RC = 0.5, e_RP = 0.5)
-# this returns all the results required for figure 3
+# we pass "true" to this ARGS for supplementary figures
+if isempty(ARGS) || ARGS[1] != "true"
+    # default for main figures 3 and 4
+    par = ModelPar()
+    fl_fig = "fig/fig_pulse.svg"
+else 
+    # parameters for SI figures S3 and S4
+    par = ModelPar(e_CP = 0.5, e_RC = 0.5, e_RP = 0.5)
+    fl_fig = "fig/fig_pulse_si.svg"
+end
+
+# run pulse simulation
 res = pulse(par, 0.1, 2.0, 2.0)
-# check equilibria (NB the par should affetc the 2 last ranges if going back to equilibrium takes more time)
+
+# temporal ranges of the different phases
 rgs = [
     180:0.01:199,
     200:0.01:205,
     205:0.01:325,
     325:0.01:350
     ]
+# check degree of omnivory for the different phases
 check_doo(res, rgs)
+
 # plot helper
 function plot_illustration(sol, eq, ttl_id, leg = true, y_max = 5)
     RCP_cols = ["#1f77b4", "#ff7f0e", "#2ca02c"]
@@ -107,6 +121,5 @@ ylabel("Max - Min")
 plt.legend()
 
 tight_layout()
-savefig("fig/fig_4.svg")
-# savefig("fig/fig_S3.svg")
+savefig(fl_fig)
 

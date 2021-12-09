@@ -2,18 +2,33 @@ include("basic_omnivory_module.jl")
 include("press.jl")
 using PyPlot
 
-# PRESS SIMULATION
-par = ModelPar()
-# NB: for FigS4, use
-# par = ModelPar(e_CP = 0.5, e_RC = 0.5, e_RP = 0.5)
+# PRESS SIMULATIONS
+# returns dynamics and metrics in different panels, we actually dispatch the 
+# different pannels between figure 3 and 4 with Inkscape (we did the same
+# for figures S3 and S4).
+
+# we pass "true" to this ARGS for supplementary figures
+if isempty(ARGS) || ARGS[1] != "true"
+    # default for main figures 3 and 4
+    par = ModelPar()
+    fl_fig = "fig/fig_press.svg"
+else 
+    # parameters for SI figures S3 and S4
+    par = ModelPar(e_CP = 0.5, e_RC = 0.5, e_RP = 0.5)
+    fl_fig = "fig/fig_press_si.svg"
+end 
+
+# run the simulation
 res = press(par, 0.1, 1.2)
-# check equilibria 
+
+# temporal ranges of the different phases
 rgs = [
     280:0.01:299,
     300:0.01:320,
     320:0.01:550,
     880:0.01:900
     ]
+# check degree of omnivory for the different phases
 check_doo(res, rgs)
 
 # plot helper
@@ -108,5 +123,4 @@ ylabel("Max - Min")
 plt.legend()
 
 tight_layout()
-savefig("fig/fig_3.svg")
-# savefig("fig/fig_S3.svg")
+savefig(fl_fig)
