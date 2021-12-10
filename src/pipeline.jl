@@ -1,4 +1,6 @@
-# Install packagess
+# Orchestrates scripts
+
+# Install packages
 printstyled("1. Installing packages\n", color = :blue)
 include("install_packages.jl")
 

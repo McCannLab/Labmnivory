@@ -54,11 +54,11 @@ You should now be ready to reproduce the analysis.
 - `basic_omnivory_module.jl`: includes all basic building blocs including the basic set of ODEs (`model!()`) and the functions to compute the different metrics (e.g. `overshoot()`);
 - `pulse.jl`: functions to run pulse analysis;
 - `press.jl`: functions to run press analysis;
-- `fig_press.jl`: script to create pulse figures (Figs. 3 (a-c), 4 (a-c), S3 (a-c), S4 (a-c));
-- `fig_pulse.jl`: script to create press figures (Figs. 3 (d-f), 4 (d-f), S3 (d-f), S4 (d-f));
+- `fig_press.jl`: script to create pulse figure panels (Figs. 3 (a-c), 4 (a-c), S3 (a-c), S4 (a-c));
+- `fig_pulse.jl`: script to create press figure panels (Figs. 3 (d-f), 4 (d-f), S3 (d-f), S4 (d-f));
 - `fig_S1.jl`: script to create figure S1;
-- `fig_S2.jl`: script to create figure S2.
-- `pipeline.jl`: orchestrate the different scripts to reproduce the analysis.
+- `fig_S2.jl`: script to create figure S2;
+- `pipeline.jl`: orchestrates the different scripts to reproduce the analysis.
 
 
 ## How to reproduce the analysis locally
@@ -71,7 +71,7 @@ julia src/pipeline.jl
 
 
 
-## Questions 
+## Questions?
 
-Script have been commented for ease of comprehension but if you still have some questions regarding the numerical implementation, do not hesitate to open an issue.
+Scripts have been commented for ease of comprehension but if you still have some questions regarding the numerical implementation, do not hesitate to create an issue.
 

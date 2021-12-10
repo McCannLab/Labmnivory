@@ -1,6 +1,6 @@
 using DifferentialEquations, NLsolve
 
-# analysis for one press simulation (1 system)
+# Full analysis for one press simulation (1 system)
 function press_unit(par, p_strength) 
     # Parameters
     u0 = [1.0, 1.5, 1.5]

@@ -3,6 +3,7 @@ include("pulse.jl")
 using PyPlot
 pygui(true)
 
+# PRESS SIMULATIONS for ranges of K, aCP, eCP and mP.
 
 # range of K
 println("Simulations for a range of K values")
