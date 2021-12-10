@@ -3,7 +3,7 @@ using LinearAlgebra: eigvals
 using ForwardDiff
 using QuadGK: quadgk
 
-# # Omnivory preference functions
+# Omnivory preference functions
 function adapt_pref(u, p, t)
     return p.ω * u[1] / (p.ω * u[1] + (1 - p.ω) * u[2])
 end
@@ -16,7 +16,7 @@ end
 @with_kw mutable struct ModelPar
     # Logistic Parameters
     r = 2.0
-    ## `K_base` measures the underyling K outside of any forcing applied
+    # `K_base` measures the underyling K outside of any forcing applied
     K_base = 3
     K = 3
     # Consumer Parameters
@@ -33,10 +33,13 @@ end
     a_RP = 0.2
     h_RP = 0.6
     e_RP = 0.4
+    # if Ω = 0 then we have a food chain
     Ω = 0.1
     # Forcing Function
+    # 'fixed_pref' for passive omnivory
+    # 'adapt_pref' for active omnivory
     pref::Function = fixed_pref
-    ## Used in the adaptive forcing to bias towards C or R
+    # Used in the adaptive forcing to bias towards C or R
     ω = 0.5
 end
 

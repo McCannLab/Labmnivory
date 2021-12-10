@@ -31,10 +31,11 @@ function pulse_unit(par, p_length, p_strength)
 
     # run
     if par.pref == adapt_pref
-        # compute w
+        # compute ω
         # NB: This may often increases computation time as we may compute
-        # results for 'fixed' twice but the code is much easier to read. 
-        # Here the time is not a major concern as it takes few minutes to run.
+        # results for passive omnivory twice but the code is much easier to
+        # read. Here the time is not a major concern as it takes few minutes to
+        # run.
         par_fix = deepcopy(par)
         par_fix.pref = fixed_pref
         prob_fix = ODEProblem(model!, u0, t_span, deepcopy(par_fix),

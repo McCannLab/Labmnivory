@@ -18,9 +18,9 @@ printstyled("Done! fig_pulse.jl created\n", color = :green)
 
 # Supplementary Information 
 
-# The line below is used to run the SI version of the figure: when the 1st
-# argument of 'ARGS' is true, then the parameters used are the one for the SI
-# figure. Note that we actually use `ARGS` because this is specifically
+# The line below is used to run the SI version of the figures: when the 1st
+# argument of 'ARGS' is true, then the model parameters used are the ones for 
+# the SI figure. Note that we actually use `ARGS` because this is specifically
 # the vector that captures external arguments. Thus using it allows us to use 
 # arguments in the command line. So here, to run the SI version of fig_pulse, 
 # I'd use `julia fig_pulse.jl true`. To mimic this we simply add "true" to 
