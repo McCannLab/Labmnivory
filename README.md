@@ -1,5 +1,8 @@
-# Labmnivory
+# Labmnivory (research compendium)
 [![Reproduce the analysis](https://github.com/McCannLab/Labmnivory/actions/workflows/reproduce.yaml/badge.svg)](https://github.com/McCannLab/Labmnivory/actions/workflows/reproduce.yaml)
+
+
+This repository includes all the scripts to reproduce the theoretical investigations carried out in our paper "On the Dynamic Nature of Omnivory in a Changing World" (a study codenamed 'Labmnivory').
 
 
 ## Installation
